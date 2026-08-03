@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
+
+const QrScannerModal = dynamic(() => import("@/components/QrScannerModal"), { ssr: false });
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -89,6 +92,16 @@ const statusBadges: Record<string, { className: string }> = {
 export default function KurirDashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
+  const [scanResult, setScanResult] = useState<string | null>(null);
+  const [manualResi, setManualResi] = useState("");
+
+  const handleScanSuccess = (resi: string) => {
+    setShowScanner(false);
+    setScanResult(resi);
+    // Auto-fill the manual input with scanned result
+    setManualResi(resi);
+  };
 
   // Login screen
   if (!isLoggedIn) {
@@ -254,7 +267,8 @@ export default function KurirDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
+    <>
+      <div className="min-h-screen bg-slate-50 pb-24">
       {/* Top Header */}
       <div className="sticky top-0 z-40 px-4 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-xs">
         <div className="flex items-center justify-between">
@@ -361,16 +375,44 @@ export default function KurirDashboard() {
             <p className="text-sm text-slate-500 mb-6">
               Arahkan kamera ke kode QR atau barcode pada paket
             </p>
-            <Button className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl">
+            <Button
+              className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl"
+              onClick={() => { setScanResult(null); setShowScanner(true); }}
+            >
               <QrCode data-icon="inline-start" />
               Buka Kamera
             </Button>
+
+            {/* Scan result feedback */}
+            {scanResult && (
+              <div className="mt-4 mx-auto max-w-xs bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 flex items-center gap-3">
+                <CheckCircle size={18} className="text-emerald-600 shrink-0" />
+                <div className="text-left">
+                  <p className="text-xs text-emerald-700 font-semibold">QR berhasil discan!</p>
+                  <p className="text-xs font-mono text-emerald-900 font-bold">{scanResult}</p>
+                </div>
+              </div>
+            )}
+
             <Card className="mt-8 border-slate-200 bg-white shadow-xs rounded-2xl">
               <CardContent className="p-4">
                 <p className="text-xs font-semibold text-slate-500 mb-2">Atau masukkan nomor resi manual:</p>
                 <div className="flex gap-2">
-                  <Input type="text" placeholder="CAM-2025-XXXXX" className="flex-1 border-slate-300 bg-white text-slate-900" />
-                  <Button className="bg-red-600 hover:bg-red-700 text-white font-semibold">Cari</Button>
+                  <Input
+                    type="text"
+                    placeholder="CAM-2025-XXXXX"
+                    value={manualResi}
+                    onChange={(e) => setManualResi(e.target.value)}
+                    className="flex-1 border-slate-300 bg-white text-slate-900"
+                  />
+                  <Button
+                    className="bg-red-600 hover:bg-red-700 text-white font-semibold"
+                    onClick={() => {
+                      if (manualResi.trim()) {
+                        setScanResult(manualResi.trim());
+                      }
+                    }}
+                  >Cari</Button>
                 </div>
               </CardContent>
             </Card>
@@ -430,5 +472,14 @@ export default function KurirDashboard() {
         </div>
       </Tabs>
     </div>
+
+    {/* QR Scanner Modal — full-screen overlay */}
+    {showScanner && (
+      <QrScannerModal
+        onScan={handleScanSuccess}
+        onClose={() => setShowScanner(false)}
+      />
+    )}
+  </>
   );
 }
