@@ -1,26 +1,732 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "leaflet/dist/leaflet.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ===== NISSAN NICS INSPIRED DESIGN SYSTEM ===== */
+/* CAM Cargo — 90% match with nissan-nics.co.jp */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors */
+  /* Typography */
+  --font-heading-stack: "HelveticaNeue-Light", "Helvetica Neue", "Arial Nova", "Helvetica", Arial, sans-serif;
+
+  --cam-red: #C3002F;
+  --cam-red-dark: #9B0025;
+  --cam-red-light: #FEE2E2;
+
+  /* Section Backgrounds */
+  --bg-dark: #3D4550;
+  --bg-darker: #2D333B;
+  --bg-light: #FFFFFF;
+  --bg-light-alt: #F3F4F6;
+
+  /* Text */
+  --text-dark: #111827;
+  --text-body: #4B5563;
+  --text-muted: #9CA3AF;
+  --text-light: #FFFFFF;
+  --text-light-body: #D1D5DB;
+  --text-light-muted: #9CA3AF;
+
+  /* Borders */
+  --border-light: #E5E7EB;
+  --border-dark: rgba(255, 255, 255, 0.15);
+
+  /* Transitions */
+  --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* shadcn semantic tokens — Light Theme */
+  --background: oklch(0.985 0.002 260);
+  --foreground: oklch(0.145 0.02 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0.02 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0.02 260);
+  --primary: oklch(0.50 0.22 18);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.005 260);
+  --secondary-foreground: oklch(0.20 0.02 260);
+  --muted: oklch(0.96 0.005 260);
+  --muted-foreground: oklch(0.48 0.02 260);
+  --accent: oklch(0.96 0.005 260);
+  --accent-foreground: oklch(0.20 0.02 260);
+  --destructive: oklch(0.577 0.245 27.325);
+  --success: oklch(0.58 0.19 145);
+  --success-foreground: oklch(0.99 0 0);
+  --border: oklch(0.91 0.005 260);
+  --input: oklch(0.91 0.005 260);
+  --ring: oklch(0.50 0.22 18);
+  --chart-1: oklch(0.50 0.22 18);
+  --chart-2: oklch(0.58 0.19 145);
+  --chart-3: oklch(0.65 0.18 50);
+  --chart-4: oklch(0.55 0.15 260);
+  --chart-5: oklch(0.70 0.10 320);
+  --radius: 0.75rem;
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.145 0.02 260);
+  --sidebar-primary: oklch(0.50 0.22 18);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.96 0.005 260);
+  --sidebar-accent-foreground: oklch(0.20 0.02 260);
+  --sidebar-border: oklch(0.91 0.005 260);
+  --sidebar-ring: oklch(0.50 0.22 18);
 }
 
+/* Tailwind v4 theme extension */
 @theme inline {
-  --color-background: var(--background);
+  --color-cam-red: var(--cam-red);
+  --color-cam-red-dark: var(--cam-red-dark);
+  --color-cam-red-light: var(--cam-red-light);
+
+  --color-bg-dark: var(--bg-dark);
+  --color-bg-darker: var(--bg-darker);
+  --color-bg-light: var(--bg-light);
+  --color-bg-light-alt: var(--bg-light-alt);
+
+  --color-text-dark: var(--text-dark);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
+
+  --font-sans: var(--font-body);
+  --font-body: var(--font-body);
+  --font-heading: var(--font-body);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ===== BASE STYLES =====
+   IMPORTANT: This MUST be inside @layer base so that Tailwind utility
+   classes (px-*, py-*, p-*, m-*, etc.) in @layer utilities can properly
+   override these resets. CSS outside @layer always wins in Tailwind v4,
+   which was causing ALL padding utilities to be ignored site-wide.
+*/
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #FFFFFF;
+  color: var(--text-dark);
+  /* Noto Sans JP for all body text */
+  font-family: var(--font-body), "Noto Sans JP", sans-serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* Helvetica Neue for all large display headings */
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading-stack);
+  font-weight: 300;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F3F4F6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cam-red);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cam-red-dark);
+}
+
+/* ===== SELECTION ===== */
+::selection {
+  background: rgba(195, 0, 47, 0.15);
+  color: var(--text-dark);
+}
+
+/* ===================================================
+   NISSAN NICS SIGNATURE COMPONENTS
+   =================================================== */
+
+/* === Nissan-Style Pill Button === */
+.nics-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.875rem 0.875rem 0.875rem 2rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.nics-pill:hover {
+  border-color: rgba(0, 0, 0, 0.35);
+}
+
+.nics-pill--dark {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+.nics-pill--dark:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Red circle badge inside pill */
+.nics-pill__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background: var(--cam-red);
+  color: #FFFFFF;
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+}
+
+.nics-pill:hover .nics-pill__badge {
+  transform: translateX(4px);
+}
+
+.nics-pill__text {
+  display: flex;
+  flex-direction: column;
+}
+
+.nics-pill__label {
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.nics-pill__sublabel {
+  font-weight: 400;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* === Section Title (Nissan-style huge text) === */
+.nics-title {
+  font-family: var(--font-heading-stack);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-dark);
+}
+
+.nics-title--light {
+  color: #FFFFFF;
+}
+
+/* === Red Accent Dash === */
+.nics-dash {
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background: var(--cam-red);
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+/* === Section Inner Wrapper (rounded corners like Nissan) === */
+.nics-section-dark {
+  background: var(--bg-dark);
+  border-radius: 4rem;
+  margin-inline: 1.25rem;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .nics-section-dark {
+    margin-inline: 2rem;
+    border-radius: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .nics-section-dark {
+    margin-inline: 3rem;
+    border-radius: 3rem;
+  }
+}
+
+/* === Vertical Side Text === */
+.nics-vertical-text {
+  position: fixed;
+  z-index: 10;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  opacity: 0.4;
+}
+
+.nics-vertical-text--left {
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.nics-vertical-text--right {
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* === News Row Hover Effect (bg slides up from bottom) === */
+.nics-news-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  overflow: hidden;
+  transition: color var(--transition-base);
+}
+
+.nics-news-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #111827;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform var(--transition-slow);
+  z-index: 0;
+}
+
+.nics-news-row:hover::before {
+  transform: scaleY(1);
+}
+
+.nics-news-row>* {
+  position: relative;
+  z-index: 1;
+}
+
+.nics-news-row:hover,
+.nics-news-row:hover * {
+  color: #FFFFFF !important;
+}
+
+/* === Image slow zoom on hover === */
+.nics-img-zoom {
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.nics-img-zoom img {
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nics-img-zoom:hover img {
+  transform: scale(1.05);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceDown {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.8s ease-out forwards;
+}
+
+.animate-bounce-down {
+  animation: bounceDown 2s ease-in-out infinite;
+}
+
+/* Staggered animations */
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+
+/* ===== LEAFLET OVERRIDES ===== */
+.leaflet-container {
+  border-radius: 0.75rem;
+  z-index: 1;
+}
+
+/* ===== DARK MODE (shadcn) ===== */
+.dark {
+  --background: oklch(0.13 0.02 260);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.17 0.02 260);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.17 0.02 260);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.50 0.22 18);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.22 0.015 260);
+  --secondary-foreground: oklch(0.92 0 0);
+  --muted: oklch(0.22 0.015 260);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.22 0.015 260);
+  --accent-foreground: oklch(0.92 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --success: oklch(0.62 0.19 145);
+  --success-foreground: oklch(0.98 0 0);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.50 0.22 18);
+  --sidebar: oklch(0.15 0.02 260);
+  --sidebar-foreground: oklch(0.97 0 0);
+  --sidebar-primary: oklch(0.50 0.22 18);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.22 0.015 260);
+  --sidebar-accent-foreground: oklch(0.92 0 0);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.50 0.22 18);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body), "Noto Sans JP", sans-serif;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "HelveticaNeue-Light", "Helvetica Neue", "Arial Nova", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+  }
+}
+
+
+/* =====================================================
+   GLOBAL SPACING SYSTEM — CAM Cargo Layout Rhythm
+   Added as additional CSS, no existing rules changed.
+   Applies breathing room to ALL pages & components.
+   ===================================================== */
+
+/* --------------------------------------------------
+   1. SECTION-LEVEL VERTICAL RHYTHM
+   Every <section> gets a generous top/bottom gap so
+   sections never "bleed" into each other.
+-------------------------------------------------- */
+main>section {
+  padding-block: clamp(4rem, 8vw, 8rem);
+}
+
+/* Sections that are explicitly dark (nics-section-dark
+   wrapper inside) need extra outer breathing room */
+main>section:has(.nics-section-dark) {
+  padding-block: clamp(3rem, 6vw, 6rem);
+}
+
+/* Hero section: keep full-screen, no overrides */
+main>section:first-child {
+  padding-block: 0 !important;
+}
+
+/* --------------------------------------------------
+   2. HEADING SPACING
+   All heading elements get consistent margins so text
+   doesn't crowd whatever comes after it.
+-------------------------------------------------- */
+h1,
+h2,
+h3,
+h4 {
+  margin-block-end: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+h1+p,
+h2+p,
+h3+p,
+h1+div,
+h2+div,
+h3+div {
+  margin-block-start: clamp(0.5rem, 1.5vw, 1.25rem);
+}
+
+/* --------------------------------------------------
+   3. PARAGRAPH & TEXT SPACING
+   Paragraphs breathe inside any container.
+-------------------------------------------------- */
+p+p {
+  margin-block-start: 1.25em;
+}
+
+p+a,
+p+button,
+p+div {
+  margin-block-start: clamp(1rem, 2.5vw, 2rem);
+}
+
+/* --------------------------------------------------
+   4. GRID & FLEX CONTAINER GAPS
+   Any grid or flex inside a section gets a minimum gap
+   so items don't collapse together.
+-------------------------------------------------- */
+:where(section .grid) {
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+:where(section .flex:not(.nics-pill):not(.nics-news-row):not(nav):not(header *)) {
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+/* --------------------------------------------------
+   5. FORM & INPUT SPACING (Tracking, Cek Harga, Kontak)
+   Form groups and inputs get vertical separation.
+-------------------------------------------------- */
+form>*+*,
+form>div+div,
+[role="form"]>*+* {
+  margin-block-start: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+input,
+textarea,
+select {
+  margin-block: 0.25rem;
+}
+
+label+input,
+label+textarea,
+label+select {
+  margin-block-start: 0.5rem;
+}
+
+/* --------------------------------------------------
+   6. CARD / BOX PADDING
+   Explicit utility for content cards in sub-pages.
+-------------------------------------------------- */
+.cam-card {
+  padding: clamp(1.5rem, 3vw, 3rem);
+}
+
+/* --------------------------------------------------
+   7. SUB-PAGE HERO CLEARANCE
+   Pages with a fixed Navbar (h-16 = 4rem) need
+   enough top padding on their hero section so content
+   isn't hidden under the navbar.
+-------------------------------------------------- */
+main>section:first-child>div:first-child {
+  padding-block-start: max(6rem, calc(4rem + 2vw));
+}
+
+/* --------------------------------------------------
+   8. FOOTER BREATHING ROOM
+   Footer should not feel glued to the last section.
+   Add a visual separator via the last section.
+-------------------------------------------------- */
+main>section:last-child {
+  padding-block-end: clamp(5rem, 8vw, 9rem);
+}
+
+/* --------------------------------------------------
+   9. LIST ITEM SPACING
+   Any <ul> or <ol> inside page content gets gaps.
+-------------------------------------------------- */
+ul li+li,
+ol li+ol {
+  margin-block-start: 0.6rem;
+}
+
+/* --------------------------------------------------
+   10. STAT / NUMBER BLOCKS
+   Large number displays (e.g. "500+") get separation.
+-------------------------------------------------- */
+[class*="stat"],
+[class*="counter"],
+[class*="number"] {
+  padding-block: clamp(0.5rem, 1.5vw, 1.5rem);
+}
+
+/* --------------------------------------------------
+   11. DIVIDER / SEPARATOR LINES
+   <hr> and border-b items get vertical padding.
+-------------------------------------------------- */
+hr {
+  margin-block: clamp(2rem, 4vw, 4rem);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* --------------------------------------------------
+   12. IMAGE + CAPTION SPACING
+   Images in content areas don't crowd text.
+-------------------------------------------------- */
+section img+p,
+section p+img,
+section div+img {
+  margin-block-start: clamp(1rem, 2vw, 2rem);
+}
+
+/* --------------------------------------------------
+   13. BUTTON / PILL SPACING
+   Action elements below text get clear visual space.
+-------------------------------------------------- */
+section p+.nics-pill,
+section div+.nics-pill,
+section p+a[class*="pill"],
+section div+a[class*="pill"] {
+  margin-block-start: clamp(1.5rem, 3vw, 2.5rem);
+  display: inline-flex;
+}
+
+/* --------------------------------------------------
+   RESPONSIVE BREAKPOINT ADJUSTMENTS
+   Tighten spacing slightly on small screens for
+   a comfortable mobile layout.
+-------------------------------------------------- */
+@media (max-width: 768px) {
+  main>section {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+
+  section .grid {
+    gap: clamp(1.25rem, 4vw, 2rem);
+  }
+}
+
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0%);
+  }
 }
