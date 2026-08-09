@@ -4,6 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
+const generateLogo = (name: string) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="250" height="100" viewBox="0 0 250 100">
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="16" fill="#1e293b">${name}</text>
+  </svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+};
+
 const PARTNERS = [
   { name: "Partner 1", logo: "/scraped-images/1-4-1-1024x768.webp" },
   { name: "Partner 2", logo: "/scraped-images/2-4-1-1024x768.webp" },
@@ -30,6 +37,26 @@ const PARTNERS = [
   { name: "Partner 23", logo: "/scraped-images/9ab76f54-brand-logo-5.png" },
   { name: "Partner 24", logo: "/scraped-images/aa044667-image16.png" },
   { name: "Partner 25", logo: "/scraped-images/3a71b3a9-image18.png" },
+  // { name: "EDELWEIS LOGISTIC", logo: generateLogo("EDELWEIS LOGISTIC") },
+  // { name: "ALTON LOGISTIK INDONESIA", logo: generateLogo("ALTON LOGISTIK") },
+  // { name: "ANDALAN DOMESTIK CARGO", logo: generateLogo("ANDALAN DOMESTIK") },
+  // { name: "WUERTH INDONESIA GREEN", logo: generateLogo("WUERTH INDONESIA") },
+  // { name: "ENERGI UTAMA", logo: generateLogo("ENERGI UTAMA") },
+  // { name: "PT. MULTI NITROTAMA KIMIA", logo: generateLogo("MULTI NITROTAMA") },
+  // { name: "DMX", logo: generateLogo("DMX") },
+  // { name: "ALIH JAYA TRANS", logo: generateLogo("ALIH JAYA TRANS") },
+  // { name: "AJI MANDIRI EXSPRESS", logo: generateLogo("AJI MANDIRI") },
+  // { name: "PT INDRATAMA LOGISTICS", logo: generateLogo("INDRATAMA LOGISTICS") },
+  // { name: "PT TRIMITRA SINERGI NUSA", logo: generateLogo("TRIMITRA SINERGI") },
+  // { name: "PT RIANINDA UTAMA EKSPRESS", logo: generateLogo("RIANINDA UTAMA") },
+  // { name: "ASIA TEKNIK", logo: generateLogo("ASIA TEKNIK") },
+  // { name: "M2M LOGISTIC", logo: generateLogo("M2M LOGISTIC") },
+  // { name: "PONDOK CABE GOLF", logo: generateLogo("PONDOK CABE GOLF") },
+  // { name: "JAYA SAMUDRA CARGO", logo: generateLogo("JAYA SAMUDRA") },
+  // { name: "PT. HAS ENVIRONMENTAL", logo: generateLogo("HAS ENVIRONMENTAL") },
+  // { name: "ALP LOGISTIK", logo: generateLogo("ALP LOGISTIK") },
+  // { name: "ANGKASA PURA", logo: generateLogo("ANGKASA PURA") },
+  // { name: "PT. SANTOS JAYA MAKMUR", logo: generateLogo("SANTOS JAYA MAKMUR") },
 ];
 
 export default function PartnersSection() {
@@ -54,7 +81,7 @@ export default function PartnersSection() {
               </span>
             </div>
           </div>
-          
+
           <Link href="/kontak" className="nics-pill group hidden lg:inline-flex">
             <span className="nics-pill__text">
               <span className="nics-pill__label">Join Us</span>
@@ -70,18 +97,18 @@ export default function PartnersSection() {
       {/* Marquee Container */}
       <div className="relative w-full border-y border-gray-100 py-12 lg:py-20 bg-[#FBFBFB]">
         {/* We use inline style for animation to guarantee it works with our custom @keyframes marquee-right */}
-        <div 
+        <div
           className="flex w-max"
           style={{ animation: "marquee-right 200s linear infinite" }}
         >
           {scrollItems.map((partner, idx) => (
-            <div 
-              key={idx} 
-              className="flex items-center justify-center px-10 lg:px-20 mx-4 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 cursor-pointer"
+            <div
+              key={idx}
+              className="flex items-center justify-center px-10 lg:px-20 mx-4 transition-transform duration-500 hover:scale-105 cursor-pointer"
             >
               <div className="relative w-48 h-24 lg:w-64 lg:h-32">
-                <Image 
-                  src={partner.logo} 
+                <Image
+                  src={partner.logo}
                   alt={partner.name}
                   fill
                   className="object-contain"

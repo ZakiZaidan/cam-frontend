@@ -277,7 +277,7 @@ export default function BusinessSection() {
           }}
         >
           {/* ── Static header: title + View All button ── */}
-          <div className="absolute top-0 left-0 right-0 z-20 flex items-start justify-between px-6 md:px-16 lg:px-28 xl:px-40 pt-16 lg:pt-28">
+          <div className="absolute top-0 left-0 right-0 z-20 flex items-start justify-between px-6 md:px-16 lg:px-28 xl:px-40 pt-32 lg:pt-40">
             <div>
               <h2 className="nics-title nics-title--light leading-[1.1] pb-2">
                 Our Business
