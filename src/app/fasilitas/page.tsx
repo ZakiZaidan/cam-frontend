@@ -304,17 +304,17 @@ export default function FasilitasPage() {
                 Sebagai perusahaan logistik yang profesional, CAM Cargo telah terdaftar secara resmi dan memiliki KBLI (Klasifikasi Baku Lapangan Usaha Indonesia) untuk menjalankan operasional logistik dengan aman dan terpercaya.
               </p>
             </div>
-            
-            <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+
+            <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
               {/* Dokumen 1 */}
               <div className="bg-gray-50 p-4 lg:p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-500">
                 <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-white">
                   <Image
-                    src="/images/kbli-cam.png"
+                    src="/images/nib-cam.png"
                     alt="Dokumen KBLI CAM Cargo 1"
                     fill
                     className="object-contain hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
               </div>
@@ -322,11 +322,23 @@ export default function FasilitasPage() {
               <div className="bg-gray-50 p-4 lg:p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-500">
                 <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-white">
                   <Image
-                    src="/images/kbli-cam2.png"
+                    src="/images/kbli-cam.png"
                     alt="Dokumen KBLI CAM Cargo 2"
                     fill
                     className="object-contain hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              </div>
+              {/* Dokumen 3 */}
+              <div className="bg-gray-50 p-4 lg:p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-500">
+                <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-white">
+                  <Image
+                    src="/images/kbli-cam2.png"
+                    alt="Dokumen NIB CAM Cargo"
+                    fill
+                    className="object-contain hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
               </div>
