@@ -292,6 +292,48 @@ export default function FasilitasPage() {
           </div>
         </section>
 
+        {/* ── Dokumen Legalitas (KBLI) ────────────────────────── */}
+        <section className="bg-white py-24 lg:py-32 px-6 lg:px-16 overflow-hidden">
+          <div className="max-w-[1400px] mx-auto">
+            <div className="flex flex-col items-center text-center mb-16 lg:mb-20">
+              <h2 className="text-[#111827] font-light text-3xl lg:text-5xl mb-4">
+                Dokumen <span className="font-semibold">Legalitas Usaha</span>
+              </h2>
+              <div className="w-20 h-1 bg-red-600 mb-6" />
+              <p className="text-gray-500 max-w-2xl text-lg font-light">
+                Sebagai perusahaan logistik yang profesional, CAM Cargo telah terdaftar secara resmi dan memiliki KBLI (Klasifikasi Baku Lapangan Usaha Indonesia) untuk menjalankan operasional logistik dengan aman dan terpercaya.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+              {/* Dokumen 1 */}
+              <div className="bg-gray-50 p-4 lg:p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-500">
+                <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-white">
+                  <Image
+                    src="/images/kbli-cam.png"
+                    alt="Dokumen KBLI CAM Cargo 1"
+                    fill
+                    className="object-contain hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+              </div>
+              {/* Dokumen 2 */}
+              <div className="bg-gray-50 p-4 lg:p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-500">
+                <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-white">
+                  <Image
+                    src="/images/kbli-cam2.png"
+                    alt="Dokumen KBLI CAM Cargo 2"
+                    fill
+                    className="object-contain hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── Commitment Red Section ─────────────────────────── */}
         <section className="bg-[#C81E1E] rounded-[3rem] relative overflow-hidden mx-6 lg:mx-16 mb-20">
           <div className="relative z-10 px-8 lg:px-20 py-28 lg:py-40">
