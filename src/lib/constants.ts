@@ -215,6 +215,32 @@ export const SERVICES = [
     extraContent: "Berbagai pilihan armada tersedia untuk menyesuaikan kebutuhan barang Anda. Mulai dari pickup, engkel, colt diesel, fuso, hingga tronton. Keberangkatan fleksibel sesuai kebutuhan klien.",
     waText: "charter%20kendaraan%20barang",
   },
+  {
+    slug: "sewa-kapal-tongkang",
+    title: "Sewa Kapal & Tongkang",
+    subtitle: "Curah & Heavy Lift",
+    description:
+      "Layanan penyewaan Mother Vessel dan Tongkang untuk pengiriman kargo curah (batu bara, pasir, pupuk, hasil pertanian) dalam skala masif antar pulau.",
+    icon: "Ship",
+    heroImage: "/images/motherversel.jpg",
+    gallery: [
+      "/images/motherVerselBeras.png",
+      "/images/MotherVerselPupuk.png",
+      "/images/motherVerselJagung.png",
+      "/images/tongkangBatubara.jpg",
+      "/images/tongkangCangkangSawit.jpg",
+      "/images/tongkangPasir.jpg",
+      "/images/tongkangbatu split.jpg",
+    ],
+    features: [
+      { title: "Skala Masif", desc: "Mampu mengangkut muatan curah hingga puluhan ribu metrik ton dalam sekali pengiriman." },
+      { title: "Ragam Komoditas", desc: "Cocok untuk pengangkutan curah: batu bara, pasir, batu split, cangkang sawit, pupuk, beras, hingga jagung." },
+      { title: "Armada Lengkap", desc: "Tersedia berbagai pilihan ukuran Tongkang (Barge) dan Mother Vessel sesuai kebutuhan skala proyek." },
+      { title: "Rute Seluruh Nusantara", desc: "Menjangkau seluruh pelabuhan dan perairan laut di wilayah Nusantara dengan aman." },
+    ],
+    extraContent: "Layanan Sewa Kapal (Mother Vessel) dan Tongkang ini secara khusus disediakan bagi perusahaan pertambangan, perkebunan, dan industri besar yang membutuhkan solusi logistik curah antar pulau. Kami memastikan ketersediaan ruang (space) kapal dengan jadwal keberangkatan yang bisa disesuaikan dengan ritme produksi perusahaan Anda.",
+    waText: "sewa%20kapal%20dan%20tongkang",
+  },
 ];
 
 export const FEATURES = [

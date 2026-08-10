@@ -14,16 +14,17 @@ import {
   Container,
   ArrowRight,
   ArrowUpRight,
+  Ship,
 } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Layanan — Ekspedisi Balikpapan: Kirim Barang, Motor, Mobil & Alat Berat",
   description:
-    "Lengkap! Layanan CAM Cargo Balikpapan: kirim barang reguler, motor, mobil, alat berat, pindahan, via udara, project cargo, dan charter kendaraan ke seluruh Indonesia. Door-to-door, tracking real-time, asuransi.",
+    "Lengkap! Layanan CAM Cargo Balikpapan: kirim barang reguler, motor, mobil, alat berat, pindahan, via udara, project cargo, charter kendaraan, hingga sewa Mother Vessel dan Tongkang ke seluruh Indonesia.",
   alternates: { canonical: "https://camcargo.co.id/layanan" },
   openGraph: {
     title: "Layanan CAM Cargo — Kirim Barang, Motor, Mobil & Alat Berat",
-    description: "8 layanan pengiriman CAM Cargo Balikpapan: barang, motor, mobil, alat berat, pindahan, udara, project, charter kendaraan ke seluruh Indonesia.",
+    description: "9 layanan pengiriman CAM Cargo Balikpapan: barang, motor, mobil, alat berat, pindahan, udara, project, charter kendaraan, dan kapal laut ke seluruh Indonesia.",
     url: "https://camcargo.co.id/layanan",
   },
 };
@@ -38,6 +39,7 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
   Plane,
   Building2,
   Container,
+  Ship,
 };
 
 const serviceColors = [

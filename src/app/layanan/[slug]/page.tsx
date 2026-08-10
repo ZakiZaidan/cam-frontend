@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { SERVICES, COMPANY } from "@/lib/constants";
 import Link from "next/link";
 import Image from "next/image";
+import GallerySlider from "@/components/GallerySlider";
 import {
   ArrowLeft,
   ArrowRight,
@@ -183,35 +184,7 @@ export default async function ServiceDetailPage({ params }: { params: Params }) 
         )}
 
         {/* ── 3. Dokumentasi Gallery ───────────────────── */}
-        {gallery.length > 0 && (
-          <section className="px-6 lg:px-24 pb-16 lg:pb-24 max-w-[1400px] mx-auto">
-            <div className="flex items-center gap-4 mb-10">
-              <span className="w-12 h-[2px] bg-red-600" />
-              <h2 className="text-2xl lg:text-3xl font-light text-[#111827]">
-                Galeri <span className="font-semibold">Dokumentasi</span>
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4">
-              {gallery.map((img, i) => (
-                <div
-                  key={i}
-                  className={`relative overflow-hidden rounded-2xl bg-gray-100 aspect-[3/4] ${
-                    i === 0 ? "col-span-2 md:col-span-2 lg:col-span-2 row-span-2 aspect-auto" : ""
-                  }`}
-                >
-                  <Image
-                    src={img}
-                    alt={`${service.title} dokumentasi ${i + 1}`}
-                    fill
-                    className="object-cover hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        <GallerySlider images={gallery} title={service.title} />
 
         {/* ── 4. FAQ + Sidebar ──────────────────────────── */}
         <section className="px-6 lg:px-24 pb-16 lg:pb-32 max-w-[1400px] mx-auto">

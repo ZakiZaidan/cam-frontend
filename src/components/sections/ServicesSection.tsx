@@ -42,7 +42,9 @@ export default function ServicesSection() {
             <Link
               href={`/layanan/${item.slug}`}
               key={item.slug}
-              className="group relative h-[380px] lg:h-[480px] rounded-3xl overflow-hidden block"
+              className={`group relative h-[380px] lg:h-[480px] rounded-3xl overflow-hidden block ${
+                idx === 8 ? "md:col-span-2 lg:col-span-4" : ""
+              }`}
             >
               {/* Background Image */}
               <Image
