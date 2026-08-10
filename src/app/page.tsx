@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/sections/HeroSection";
@@ -7,6 +8,20 @@ import CompanyInfoSection from "@/components/sections/CompanyInfoSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import CTASection from "@/components/sections/CTASection";
+
+export const metadata: Metadata = {
+  title: "CAM Cargo — Jasa Pengiriman Barang, Motor, Mobil & Alat Berat Balikpapan",
+  description:
+    "CAM Cargo, ekspedisi terpercaya di Balikpapan Kalimantan Timur. Kirim barang, motor, mobil, alat berat, pindahan, via udara ke seluruh Indonesia. Asuransi, door-to-door, tracking real-time.",
+  alternates: { canonical: "https://camcargo.co.id" },
+  openGraph: {
+    title: "CAM Cargo — Ekspedisi Terpercaya Balikpapan",
+    description: "Jasa pengiriman barang, motor, mobil, alat berat dan pindahan dari Balikpapan ke seluruh Indonesia.",
+    url: "https://camcargo.co.id",
+    images: [{ url: "/images/cargo-shipping.png", width: 1200, height: 630 }],
+  },
+};
+
 
 export default function HomePage() {
   return (

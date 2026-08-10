@@ -17,10 +17,17 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Layanan — CAM Cargo",
+  title: "Layanan — Ekspedisi Balikpapan: Kirim Barang, Motor, Mobil & Alat Berat",
   description:
-    "Layanan pengiriman lengkap via darat, laut, dan udara oleh CAM Cargo.",
+    "Lengkap! Layanan CAM Cargo Balikpapan: kirim barang reguler, motor, mobil, alat berat, pindahan, via udara, project cargo, dan charter kendaraan ke seluruh Indonesia. Door-to-door, tracking real-time, asuransi.",
+  alternates: { canonical: "https://camcargo.co.id/layanan" },
+  openGraph: {
+    title: "Layanan CAM Cargo — Kirim Barang, Motor, Mobil & Alat Berat",
+    description: "8 layanan pengiriman CAM Cargo Balikpapan: barang, motor, mobil, alat berat, pindahan, udara, project, charter kendaraan ke seluruh Indonesia.",
+    url: "https://camcargo.co.id/layanan",
+  },
 };
+
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   Package,

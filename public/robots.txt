@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Blokir halaman admin & kurir dari crawler
+Disallow: /admin/
+Disallow: /kurir/
+
+Sitemap: https://camcargo.co.id/sitemap.xml

@@ -41,25 +41,12 @@ export default function PhilosophySection() {
           {/* ── LEFT: Scattered image collage ── */}
           <div className="relative">
             {/* Large portrait image — anchors the collage */}
-            <div className="nics-img-zoom rounded-2xl overflow-hidden w-[85%] aspect-[3/4]">
+            <div className="nics-img-zoom rounded-3xl overflow-hidden w-full lg:w-[95%] aspect-[3/4]">
               <Image
                 src="/images/cargo-shipping.png"
                 alt="CAM Cargo Operations"
                 width={600}
                 height={800}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Small landscape image — overlaps bottom-right of the large one */}
-            <div
-              className="nics-img-zoom rounded-xl overflow-hidden absolute bottom-[-2rem] right-0 w-[48%] aspect-[4/3] shadow-xl ring-4 ring-white"
-            >
-              <Image
-                src="/images/car-transport.png"
-                alt="CAM Cargo Vehicle Transport"
-                width={400}
-                height={300}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -93,9 +80,18 @@ export default function PhilosophySection() {
               </Link>
             </div>
 
-            {/* Third accent image — bottom-right of this column, partial-peek aesthetic */}
-            <div className="mt-14 lg:mt-20 self-end w-[65%]">
-              <div className="nics-img-zoom rounded-2xl overflow-hidden aspect-[4/3]">
+            {/* Third accent image row — bottom of this column */}
+            <div className="mt-14 lg:mt-20 w-full flex flex-row items-center justify-end gap-4 lg:gap-6">
+              <div className="nics-img-zoom rounded-2xl overflow-hidden w-1/2 aspect-[4/3] shadow-sm">
+                <Image
+                  src="/images/car-transport.png"
+                  alt="CAM Cargo Vehicle Transport"
+                  width={400}
+                  height={300}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="nics-img-zoom rounded-2xl overflow-hidden w-1/2 aspect-[4/3] shadow-sm">
                 <Image
                   src="/images/cargo-shipping.png"
                   alt="CAM Cargo Delivery"
