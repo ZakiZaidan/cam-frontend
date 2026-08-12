@@ -178,10 +178,12 @@ export async function updatePackageStatus(
   latitude?: number,
   longitude?: number
 ): Promise<void> {
+  // Auto-detect courier's local timezone from browser
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   await request(`/courier/packages/${encodeURIComponent(resi)}/status`, {
     method: "POST",
     headers: courierHeaders(token),
-    body: JSON.stringify({ status, location, description, latitude, longitude }),
+    body: JSON.stringify({ status, location, description, latitude, longitude, timezone }),
   });
 }
 
