@@ -17,7 +17,7 @@ async function request<T>(
 
   const json = await res.json();
   if (!res.ok) {
-    throw new Error(json.message || "Terjadi kesalahan pada server.");
+    throw new Error(json.message || "masih dalam tahap pengembangan.");
   }
   return json;
 }
@@ -62,6 +62,11 @@ export interface ShippingRateResult {
 }
 
 // ─── Public APIs ──────────────────────────────────────────────────────────────
+
+export async function getAvailableCities(): Promise<string[]> {
+  const res = await request<{ success: boolean; data: string[] }>("/cities");
+  return res.data;
+}
 
 export async function trackShipment(resi: string): Promise<TrackingResult> {
   const res = await request<{ success: boolean; data: TrackingResult }>(

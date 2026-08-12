@@ -276,31 +276,31 @@ export default function PengirimanPage() {
       {/* Modal: Create Shipment */}
       {modal === "create" && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto" onClick={() => setModal(null)}>
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 my-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl p-8 my-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-bold text-slate-900">Buat Pengiriman Baru</h2>
               <Button variant="ghost" size="icon" onClick={() => setModal(null)}><X size={16} /></Button>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               {/* Sender */}
-              <div className="col-span-2"><p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Data Pengirim</p></div>
+              <div className="col-span-4"><p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Data Pengirim</p></div>
               {[["sender_name","Nama Pengirim"],["sender_city","Kota Asal"],["sender_phone","No. HP Pengirim"],["sender_address","Alamat Pengirim"]].map(([k,l]) => (
-                <div key={k} className={k === "sender_address" ? "col-span-2" : ""}>
+                <div key={k} className="col-span-1">
                   <label className="block text-xs font-semibold text-slate-600 mb-1">{l}</label>
                   <Input value={(newShipment as Record<string,string>)[k]} onChange={e => setNewShipment(f => ({ ...f, [k]: e.target.value }))} placeholder={l} className="rounded-xl border-slate-200 text-sm" />
                 </div>
               ))}
               {/* Receiver */}
-              <div className="col-span-2 mt-2"><p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Data Penerima</p></div>
+              <div className="col-span-4 mt-2"><p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Data Penerima</p></div>
               {[["receiver_name","Nama Penerima"],["receiver_city","Kota Tujuan"],["receiver_phone","No. HP Penerima"],["receiver_address","Alamat Penerima"]].map(([k,l]) => (
-                <div key={k} className={k === "receiver_address" ? "col-span-2" : ""}>
+                <div key={k} className="col-span-1">
                   <label className="block text-xs font-semibold text-slate-600 mb-1">{l}</label>
                   <Input value={(newShipment as Record<string,string>)[k]} onChange={e => setNewShipment(f => ({ ...f, [k]: e.target.value }))} placeholder={l} className="rounded-xl border-slate-200 text-sm" />
                 </div>
               ))}
               {/* Item */}
-              <div className="col-span-2 mt-2"><p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Detail Barang</p></div>
-              <div className="col-span-2">
+              <div className="col-span-4 mt-2"><p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Detail Barang</p></div>
+              <div className="col-span-4">
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Deskripsi Barang</label>
                 <Input value={newShipment.item_description} onChange={e => setNewShipment(f => ({ ...f, item_description: e.target.value }))} placeholder="Elektronik, Pakaian, dll" className="rounded-xl border-slate-200 text-sm" />
               </div>

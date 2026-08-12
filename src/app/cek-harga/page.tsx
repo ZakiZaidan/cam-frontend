@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
@@ -15,39 +15,50 @@ import {
   ShieldCheck,
   Package,
 } from "lucide-react";
-
-const CITIES = [
-  "Balikpapan", "Jakarta", "Surabaya", "Samarinda", "Makassar",
-  "Banjarmasin", "Medan", "Semarang", "Bandung", "Palangkaraya",
-  "Pontianak", "Manado", "Denpasar", "Yogyakarta", "Jayapura",
-  "Tarakan", "Berau", "Bontang", "Sorong", "Ambon",
-];
-
-function calculatePricing(origin: string, destination: string, weight: number) {
-  const rates = { darat: 8000, laut: 5000, udara: 25000 };
-  const multiplier = origin === destination ? 0.5 : 1;
-  return [
-    { service: "Darat (Reguler)", icon: Truck, price: Math.round(rates.darat * weight * multiplier), estimasi: "5-7 Hari", description: "Pengiriman standar via jalur darat" },
-    { service: "Laut (Ekonomis)", icon: Ship, price: Math.round(rates.laut * weight * multiplier), estimasi: "7-14 Hari", description: "Pengiriman hemat via jalur laut" },
-    { service: "Udara (Express)", icon: Plane, price: Math.round(rates.udara * weight * multiplier), estimasi: "1-3 Hari", description: "Pengiriman cepat via jalur udara" },
-  ];
-}
+import { calculateShippingRate, getAvailableCities, ShippingRateResult } from "@/lib/api";
 
 export default function CekHargaPage() {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [weight, setWeight] = useState("");
-  const [results, setResults] = useState<ReturnType<typeof calculatePricing> | null>(null);
+  const [results, setResults] = useState<ShippingRateResult | null>(null);
+  const [cities, setCities] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    async function loadCities() {
+      try {
+        const data = await getAvailableCities();
+        setCities(data);
+      } catch (err) {
+        console.error("Gagal memuat daftar kota", err);
+      }
+    }
+    loadCities();
+  }, []);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!origin || !destination || !weight) return;
     setIsLoading(true);
-    setTimeout(() => {
-      setResults(calculatePricing(origin, destination, parseFloat(weight)));
+    setError("");
+    try {
+      const res = await calculateShippingRate(origin, destination, parseFloat(weight));
+      setResults(res);
+    } catch (err: any) {
+      setError(err.message || "Gagal menghitung tarif.");
+      setResults(null);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const getIcon = (type: string) => {
+    if (type === "darat") return Truck;
+    if (type === "laut") return Ship;
+    if (type === "udara") return Plane;
+    return Package;
   };
 
   const formatCurrency = (value: number) =>
@@ -107,7 +118,7 @@ export default function CekHargaPage() {
                       className="w-full bg-transparent border-b-2 border-gray-200 focus:border-[#3D4550] py-3 text-[#111827] text-base font-light focus:outline-none transition-colors appearance-none cursor-pointer"
                     >
                       <option value="">Pilih kota asal</option>
-                      {CITIES.map((city) => (
+                      {cities.map((city) => (
                         <option key={city} value={city}>{city}</option>
                       ))}
                     </select>
@@ -124,7 +135,7 @@ export default function CekHargaPage() {
                       className="w-full bg-transparent border-b-2 border-gray-200 focus:border-[#3D4550] py-3 text-[#111827] text-base font-light focus:outline-none transition-colors appearance-none cursor-pointer"
                     >
                       <option value="">Pilih kota tujuan</option>
-                      {CITIES.map((city) => (
+                      {cities.map((city) => (
                         <option key={city} value={city}>{city}</option>
                       ))}
                     </select>
@@ -167,86 +178,111 @@ export default function CekHargaPage() {
 
             {/* Results — Right */}
             <div className="lg:col-span-3">
+              {/* Error Message */}
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-sm flex items-start gap-3">
+                  <span className="font-semibold text-red-700">Error:</span> {error}
+                </div>
+              )}
+
               {results ? (
                 <div>
                   {/* Route Summary */}
                   <div className="flex items-center gap-4 text-sm mb-10 pb-6 border-b border-gray-100">
-                    <span className="font-medium text-[#111827]">{origin}</span>
+                    <span className="font-medium text-[#111827]">{results.origin}</span>
                     <ArrowRight className="text-gray-300" size={16} />
-                    <span className="font-medium text-[#111827]">{destination}</span>
+                    <span className="font-medium text-[#111827]">{results.destination}</span>
                     <span className="ml-auto text-xs font-medium text-gray-400 border border-gray-200 px-3 py-1 rounded-full">
-                      {weight} Kg
+                      {results.weight_kg} Kg
                     </span>
                   </div>
 
                   {/* Price Cards */}
                   <div className="flex flex-col gap-6">
-                    {results.map((result, i) => {
-                      const IconComp = result.icon;
-                      return (
-                        <div
-                          key={result.service}
-                          className={`border rounded-2xl p-6 lg:p-8 transition-all hover:shadow-lg ${
-                            i === 0
-                              ? "border-[#3D4550] bg-[#3D4550]/[0.02]"
-                              : "border-gray-100"
-                          }`}
-                        >
-                          {i === 0 && (
-                            <span className="text-[10px] font-medium text-white bg-[#3D4550] px-2.5 py-1 rounded-full tracking-wider uppercase mb-4 inline-block">
-                              Rekomendasi
-                            </span>
-                          )}
-                          <div className="flex items-start justify-between gap-6">
-                            <div className="flex items-start gap-4">
-                              <div className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center flex-shrink-0">
-                                <IconComp size={20} className="text-gray-500" />
-                              </div>
-                              <div>
-                                <h3 className="text-lg font-light text-[#111827] mb-1">
-                                  {result.service}
-                                </h3>
-                                <p className="text-xs text-gray-500 font-light mb-3">
-                                  {result.description}
-                                </p>
-                                <div className="flex items-center gap-4">
-                                  <span className="flex items-center gap-1 text-xs text-gray-400">
-                                    <Clock size={14} /> {result.estimasi}
-                                  </span>
-                                  <span className="flex items-center gap-1 text-xs text-gray-400">
-                                    <ShieldCheck size={14} /> Asuransi
-                                  </span>
+                    {results.rates.length > 0 ? (
+                      results.rates.map((result, i) => {
+                        const IconComp = getIcon(result.service_type);
+                        return (
+                          <div
+                            key={result.service_type}
+                            className={`border rounded-2xl p-6 lg:p-8 transition-all hover:shadow-lg ${
+                              i === 0
+                                ? "border-[#3D4550] bg-[#3D4550]/[0.02]"
+                                : "border-gray-100"
+                            }`}
+                          >
+                            {i === 0 && (
+                              <span className="text-[10px] font-medium text-white bg-[#3D4550] px-2.5 py-1 rounded-full tracking-wider uppercase mb-4 inline-block">
+                                Rekomendasi
+                              </span>
+                            )}
+                            <div className="flex items-start justify-between gap-6">
+                              <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center flex-shrink-0">
+                                  <IconComp size={20} className="text-gray-500" />
+                                </div>
+                                <div>
+                                  <h3 className="text-lg font-light text-[#111827] mb-1">
+                                    {result.label}
+                                  </h3>
+                                  <p className="text-xs text-gray-500 font-light mb-3">
+                                    {result.description}
+                                  </p>
+                                  <div className="flex items-center gap-4">
+                                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                                      <Clock size={14} /> {result.estimated_days}
+                                    </span>
+                                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                                      <ShieldCheck size={14} /> Asuransi
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
+                              <div className="text-right shrink-0">
+                                <p
+                                  className="font-extralight text-[#111827]"
+                                  style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}
+                                >
+                                  {formatCurrency(result.total_price)}
+                                </p>
+                                <p className="text-xs text-gray-400 font-light">Estimasi</p>
+                              </div>
                             </div>
-                            <div className="text-right shrink-0">
-                              <p
-                                className="font-extralight text-[#111827]"
-                                style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}
+                            <div className="mt-6 pt-4 border-t border-gray-100">
+                              <a
+                                href={`https://wa.me/6281146602305?text=Halo%20CAM%20Kargo%2C%20saya%20ingin%20kirim%20barang%20${results.weight_kg}%20Kg%20dari%20${results.origin}%20ke%20${results.destination}%20via%20${result.label}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="nics-pill group"
                               >
-                                {formatCurrency(result.price)}
-                              </p>
-                              <p className="text-xs text-gray-400 font-light">Estimasi</p>
+                                <span className="nics-pill__text">
+                                  <span className="nics-pill__label">Pesan via WhatsApp</span>
+                                </span>
+                                <span className="nics-pill__badge">
+                                  <ArrowRight size={16} />
+                                </span>
+                              </a>
                             </div>
                           </div>
-                          <div className="mt-6 pt-4 border-t border-gray-100">
-                            <a
-                              href={`https://wa.me/6281146602305?text=Halo%20CAM%20Kargo%2C%20saya%20ingin%20kirim%20barang%20${weight}%20Kg%20dari%20${origin}%20ke%20${destination}%20via%20${result.service}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="nics-pill group"
-                            >
-                              <span className="nics-pill__text">
-                                <span className="nics-pill__label">Pesan via WhatsApp</span>
-                              </span>
-                              <span className="nics-pill__badge">
-                                <ArrowRight size={16} />
-                              </span>
-                            </a>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })
+                    ) : (
+                      <div className="p-12 text-center border border-dashed border-gray-300 rounded-2xl bg-gray-50">
+                        <Package size={32} className="mx-auto text-gray-300 mb-4" />
+                        <h3 className="text-lg font-medium text-gray-600 mb-2">Tarif Belum Tersedia</h3>
+                        <p className="text-sm text-gray-500">
+                          Mohon maaf, saat ini estimasi tarif otomatis untuk rute <b>{results.origin}</b> ke <b>{results.destination}</b> belum tersedia di sistem.
+                        </p>
+                        <a
+                          href={`https://wa.me/6281146602305?text=Halo%20CAM%20Kargo%2C%20saya%20ingin%20bertanya%20tarif%20pengiriman%20dari%20${results.origin}%20ke%20${results.destination}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-6 px-6 py-2 bg-[#111827] text-white text-sm rounded-full hover:bg-gray-800 transition-colors"
+                        >
+                          Tanyakan via WhatsApp
+                        </a>
+                      </div>
+                    )}
                   </div>
                   <p className="text-xs text-gray-400 text-center mt-6 font-light">
                     * Harga di atas adalah estimasi. Hubungi kami untuk penawaran resmi.
