@@ -215,6 +215,7 @@ export default function KurirDashboard() {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [manualResi, setManualResi] = useState("");
   const [updatingResi, setUpdatingResi] = useState<string | null>(null);
+  const [sessionLoading, setSessionLoading] = useState(true); // true while restoring session
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
@@ -227,6 +228,29 @@ export default function KurirDashboard() {
   const [dataError, setDataError] = useState("");
 
   const token = authData?.token ?? "";
+
+  // ── Restore session from localStorage on mount ────────────────────────────
+  useEffect(() => {
+    const stored = localStorage.getItem("kurir_auth");
+    if (!stored) { setSessionLoading(false); return; }
+
+    const parsed: LoginResult = JSON.parse(stored);
+    // Validate the stored token is still valid by calling /auth/me
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/auth/me`, {
+      headers: { Authorization: `Bearer ${parsed.token}`, Accept: "application/json" },
+    })
+      .then((r) => r.json())
+      .then((json) => {
+        // If token is valid and user is still active and still a kurir
+        if (json?.data?.role === "kurir" && json?.data?.is_active) {
+          setAuthData(parsed);
+        } else {
+          localStorage.removeItem("kurir_auth");
+        }
+      })
+      .catch(() => localStorage.removeItem("kurir_auth"))
+      .finally(() => setSessionLoading(false));
+  }, []);
 
   const fetchData = useCallback(async (t: string) => {
     setDataLoading(true);
@@ -265,6 +289,8 @@ export default function KurirDashboard() {
         setLoginError("Akun ini bukan akun Kurir.");
         return;
       }
+      // Persist session to localStorage
+      localStorage.setItem("kurir_auth", JSON.stringify(result));
       setAuthData(result);
     } catch (e: unknown) {
       setLoginError(e instanceof Error ? e.message : "Login gagal.");
@@ -274,11 +300,24 @@ export default function KurirDashboard() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("kurir_auth");
     setAuthData(null);
     setCourierData(null);
     setHistory([]);
     setSelectedPackage(null);
   };
+
+  // ── Session restoring splash screen ──────────────────────────────────────
+  if (sessionLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 size={36} className="animate-spin text-red-600 mx-auto mb-3" />
+          <p className="text-xs text-slate-500 font-medium">Memeriksa sesi...</p>
+        </div>
+      </div>
+    );
+  }
 
   // ── Login screen ─────────────────────────────────────────────────────────
   if (!authData) {
