@@ -6,13 +6,15 @@ async function request<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
+  // Destructure headers out so we can merge them without `...options` overwriting Content-Type
+  const { headers: optHeaders, ...restOptions } = options ?? {};
   const res = await fetch(`${API_BASE}${path}`, {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      ...(options?.headers ?? {}),
+      ...(optHeaders ?? {}),
     },
-    ...options,
+    ...restOptions,
   });
 
   const json = await res.json();
