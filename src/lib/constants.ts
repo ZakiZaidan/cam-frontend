@@ -335,6 +335,7 @@ export const NAV_LINKS = [
     })),
   },
   { label: "Kemitraan", href: "/kemitraan-bisnis" },
+  { label: "Karir", href: "/karir" },
   { label: "Tracking", href: "/tracking" },
   { label: "Cek Harga", href: "/cek-harga" },
   { label: "Kontak", href: "/kontak" },

@@ -21,9 +21,23 @@ export default function CekHargaPage() {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [weight, setWeight] = useState("");
+  const [length, setLength] = useState("");
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
   const [results, setResults] = useState<ShippingRateResult | null>(null);
   const [cities, setCities] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Hitung berat volume secara live (preview sebelum submit)
+  const volumetricPreview = (() => {
+    const p = parseFloat(length), l = parseFloat(width), t = parseFloat(height);
+    if (!p || !l || !t) return null;
+    // Preview pakai divisor 6000 (akan diganti oleh divisor per-rute dari API)
+    return Math.round((p * l * t) / 6000 * 100) / 100;
+  })();
+  const chargeablePreview = weight && volumetricPreview !== null
+    ? Math.max(parseFloat(weight), volumetricPreview)
+    : null;
 
   useEffect(() => {
     async function loadCities() {
@@ -40,14 +54,17 @@ export default function CekHargaPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!origin || !destination || !weight) return;
+    if (!origin || !destination || !weight || !length || !width || !height) return;
     setIsLoading(true);
     setError("");
     try {
-      const res = await calculateShippingRate(origin, destination, parseFloat(weight));
+      const res = await calculateShippingRate(
+        origin, destination, parseFloat(weight),
+        { length: parseFloat(length), width: parseFloat(width), height: parseFloat(height) }
+      );
       setResults(res);
-    } catch (err: any) {
-      setError(err.message || "Gagal menghitung tarif.");
+    } catch (err: unknown) {
+      setError((err as Error).message || "Gagal menghitung tarif.");
       setResults(null);
     } finally {
       setIsLoading(false);
@@ -144,23 +161,64 @@ export default function CekHargaPage() {
                   {/* Weight */}
                   <div>
                     <label className="block text-xs font-medium text-gray-400 tracking-wider uppercase mb-3">
-                      <Weight size={12} className="inline mr-1" /> Berat (Kg)
+                      <Weight size={12} className="inline mr-1" /> Berat Aktual (Kg)
                     </label>
                     <input
                       type="number"
-                      min="1"
+                      min="0.1"
                       step="0.1"
                       value={weight}
                       onChange={(e) => setWeight(e.target.value)}
                       placeholder="Masukkan berat dalam Kg"
+                      required
                       className="w-full bg-transparent border-b-2 border-gray-200 focus:border-[#3D4550] py-3 text-[#111827] text-base font-light focus:outline-none transition-colors placeholder:text-gray-300"
                     />
+                  </div>
+
+                  {/* Dimensions */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 tracking-wider uppercase mb-3">
+                      <Package size={12} className="inline mr-1" /> Dimensi (cm) — Panjang × Lebar × Tinggi
+                    </label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { val: length, set: setLength, ph: "Panjang" },
+                        { val: width,  set: setWidth,  ph: "Lebar"   },
+                        { val: height, set: setHeight, ph: "Tinggi"  },
+                      ].map(({ val, set, ph }) => (
+                        <input
+                          key={ph}
+                          type="number"
+                          min="1"
+                          step="1"
+                          value={val}
+                          onChange={(e) => set(e.target.value)}
+                          placeholder={ph}
+                          required
+                          className="w-full bg-transparent border-b-2 border-gray-200 focus:border-[#3D4550] py-3 text-[#111827] text-base font-light focus:outline-none transition-colors placeholder:text-gray-300 text-center"
+                        />
+                      ))}
+                    </div>
+                    {/* Live volumetric preview */}
+                    {volumetricPreview !== null && (
+                      <div className="mt-3 p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs text-gray-500 font-light space-y-1">
+                        <div className="flex justify-between">
+                          <span>Berat Volume (est.):</span>
+                          <span className="font-medium text-[#111827]">{volumetricPreview} Kg</span>
+                        </div>
+                        <div className="flex justify-between border-t border-gray-200 pt-1">
+                          <span>Acuan yg Digunakan:</span>
+                          <span className="font-semibold text-red-600">{chargeablePreview} Kg</span>
+                        </div>
+                        <p className="text-[10px] text-gray-400 pt-1">* Estimasi pakai divisor 6000. Divisor per-rute diterapkan saat submit.</p>
+                      </div>
+                    )}
                   </div>
 
                   {/* Submit pill */}
                   <button
                     type="submit"
-                    disabled={isLoading || !origin || !destination || !weight}
+                    disabled={isLoading || !origin || !destination || !weight || !length || !width || !height}
                     className="nics-pill group mt-4 self-start disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <span className="nics-pill__text">
@@ -187,14 +245,25 @@ export default function CekHargaPage() {
 
               {results ? (
                 <div>
-                  {/* Route Summary */}
-                  <div className="flex items-center gap-4 text-sm mb-10 pb-6 border-b border-gray-100">
+                  {/* Route Summary + Weight Breakdown */}
+                  <div className="flex flex-wrap items-center gap-4 text-sm mb-6 pb-6 border-b border-gray-100">
                     <span className="font-medium text-[#111827]">{results.origin}</span>
                     <ArrowRight className="text-gray-300" size={16} />
                     <span className="font-medium text-[#111827]">{results.destination}</span>
-                    <span className="ml-auto text-xs font-medium text-gray-400 border border-gray-200 px-3 py-1 rounded-full">
-                      {results.weight_kg} Kg
-                    </span>
+                    <div className="ml-auto flex flex-col items-end gap-1">
+                      <span className="text-xs font-medium text-gray-400 border border-gray-200 px-3 py-1 rounded-full">
+                        Aktual: {results.weight_kg} Kg
+                      </span>
+                      {results.volumetric_weight !== null && (
+                        <span className="text-xs font-medium text-amber-600 border border-amber-200 bg-amber-50 px-3 py-1 rounded-full">
+                          Volume: {results.volumetric_weight} Kg
+                        </span>
+                      )}
+                      <span className="text-xs font-semibold text-red-600 border border-red-200 bg-red-50 px-3 py-1 rounded-full">
+                        Acuan: {results.chargeable_weight} Kg
+                        {results.volume_divisor && ` ÷${results.volume_divisor}`}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Price Cards */}

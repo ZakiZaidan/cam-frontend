@@ -3,6 +3,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { PageTracker } from "@/components/PageTracker";
 
 // Noto Sans JP — for body text, labels, UI elements
 const notoSansJP = Noto_Sans_JP({
@@ -187,7 +188,10 @@ export default function RootLayout({
         <div className="nics-vertical-text nics-vertical-text--right hidden 2xl:block pointer-events-none">
           PT. Cipta Astama Mandala — Since 2023
         </div>
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          <PageTracker />
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   );

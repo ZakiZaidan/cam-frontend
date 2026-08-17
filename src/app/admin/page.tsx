@@ -13,10 +13,11 @@ import {
   MapPin, ArrowUpRight, Eye, ChevronDown, Bell, AlertTriangle, CheckCircle, Loader2,
 } from "lucide-react";
 import {
-  getDashboardKpi, getDashboardRevenue,
+  getDashboardKpi, getDashboardRevenue, getDashboardAnalytics,
   getShipments,
-  type DashboardKpi, type RevenuePoint, type Shipment,
+  type DashboardKpi, type RevenuePoint, type Shipment, type TrafficAnalytics,
 } from "@/lib/admin-api";
+import { TrafficCharts } from "@/components/admin/TrafficCharts";
 
 const statusLabels: Record<string, string> = {
   picked_up: "Dijemput", in_warehouse: "Di Gudang",
@@ -34,17 +35,21 @@ export default function AdminDashboard() {
   const [kpi, setKpi]             = useState<DashboardKpi | null>(null);
   const [revenue, setRevenue]     = useState<RevenuePoint[]>([]);
   const [shipments, setShipments] = useState<Shipment[]>([]);
+  const [analytics, setAnalytics] = useState<TrafficAnalytics | null>(null);
   const [loading, setLoading]     = useState(true);
 
   useEffect(() => {
-    Promise.all([getDashboardKpi(), getDashboardRevenue(), getShipments({ per_page: 5 })])
-      .then(([kpiData, revData, shipData]) => {
-        setKpi(kpiData);
-        setRevenue(revData);
-        setShipments(shipData.data);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    Promise.allSettled([
+      getDashboardKpi(),
+      getDashboardRevenue(),
+      getShipments({ per_page: 5 }),
+      getDashboardAnalytics(),
+    ]).then(([kpiRes, revRes, shipRes, analyticsRes]) => {
+      if (kpiRes.status === "fulfilled")      setKpi(kpiRes.value);
+      if (revRes.status === "fulfilled")      setRevenue(revRes.value);
+      if (shipRes.status === "fulfilled")     setShipments(shipRes.value.data);
+      if (analyticsRes.status === "fulfilled") setAnalytics(analyticsRes.value);
+    }).finally(() => setLoading(false));
   }, []);
 
   const maxRevenue = Math.max(...revenue.map((d) => d.value), 1);
@@ -208,6 +213,21 @@ export default function AdminDashboard() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Traffic Analytics Section */}
+      <div className="mt-6">
+        <div className="mb-4">
+          <h2 className="text-base font-bold text-slate-900">Analitik Trafik Website</h2>
+          <p className="text-xs text-slate-500">Data kunjungan publik 30 hari terakhir</p>
+        </div>
+        {analytics ? (
+          <TrafficCharts data={analytics} />
+        ) : (
+          <div className="flex items-center justify-center h-40 rounded-2xl border border-slate-200 bg-white">
+            <Loader2 size={22} className="animate-spin text-slate-400" />
+          </div>
+        )}
+      </div>
     </>
   );
 }

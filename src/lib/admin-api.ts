@@ -83,6 +83,7 @@ export interface Rate {
   service_type: "darat" | "laut" | "udara";
   price_per_kg: number;
   estimated_days: string;
+  volume_divisor: number;
   is_active: boolean;
 }
 
@@ -116,6 +117,35 @@ export interface RevenuePoint {
   month: string;
   month_full: string;
   value: number;
+}
+
+export interface DailyTrafficPoint {
+  date: string;
+  label: string;
+  views: number;
+  visitors: number;
+}
+
+export interface TopPage {
+  page: string;
+  views: number;
+}
+
+export interface ReferrerPoint {
+  name: string;
+  value: number;
+}
+
+export interface TrafficAnalytics {
+  summary: {
+    total_views: number;
+    total_visitors: number;
+    today_views: number;
+    today_visitors: number;
+  };
+  daily: DailyTrafficPoint[];
+  top_pages: TopPage[];
+  referrers: ReferrerPoint[];
 }
 
 export interface FinanceData {
@@ -161,6 +191,11 @@ export async function getDashboardKpi(): Promise<DashboardKpi> {
 
 export async function getDashboardRevenue(): Promise<RevenuePoint[]> {
   const res = await authRequest<{ data: RevenuePoint[] }>("/admin/dashboard/revenue");
+  return res.data;
+}
+
+export async function getDashboardAnalytics(): Promise<TrafficAnalytics> {
+  const res = await authRequest<{ data: TrafficAnalytics }>("/admin/dashboard/analytics");
   return res.data;
 }
 

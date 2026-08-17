@@ -16,7 +16,7 @@ const SERVICE_BADGE: Record<string, string> = {
   udara: "bg-purple-50 text-purple-700 border-purple-200",
 };
 
-const EMPTY_FORM = { origin_city: "", destination_city: "", service_type: "darat" as Rate["service_type"], price_per_kg: 0, estimated_days: "2-3 hari", is_active: true };
+const EMPTY_FORM = { origin_city: "", destination_city: "", service_type: "darat" as Rate["service_type"], price_per_kg: 0, estimated_days: "2-3 hari", volume_divisor: 6000, is_active: true };
 
 export default function TarifPage() {
   const [rates, setRates]         = useState<Rate[]>([]);
@@ -38,7 +38,7 @@ export default function TarifPage() {
   useEffect(() => { fetchData(); }, []);
 
   const openCreate = () => { setForm({ ...EMPTY_FORM }); setEditing(null); setModal("create"); };
-  const openEdit = (r: Rate) => { setForm({ origin_city: r.origin_city, destination_city: r.destination_city, service_type: r.service_type, price_per_kg: r.price_per_kg, estimated_days: r.estimated_days, is_active: r.is_active }); setEditing(r); setModal("edit"); };
+  const openEdit = (r: Rate) => { setForm({ origin_city: r.origin_city, destination_city: r.destination_city, service_type: r.service_type, price_per_kg: r.price_per_kg, estimated_days: r.estimated_days, volume_divisor: r.volume_divisor ?? 6000, is_active: r.is_active }); setEditing(r); setModal("edit"); };
 
   const handleSubmit = async () => {
     if (!form.origin_city || !form.destination_city || !form.price_per_kg) { showToast("Semua field wajib diisi"); return; }
@@ -100,14 +100,14 @@ export default function TarifPage() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-slate-50 border-slate-200">
-                  {["Asal","Tujuan","Moda","Harga/kg","Estimasi","Status","Aksi"].map(h => (
+                  {["Asal","Tujuan","Moda","Harga/kg","Estimasi","Divisor Vol.","Status","Aksi"].map(h => (
                     <TableHead key={h} className="text-xs font-bold text-slate-700">{h}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.length === 0 ? (
-                  <TableRow><TableCell colSpan={7} className="text-center text-sm text-slate-400 py-12"><DollarSign size={32} className="mx-auto mb-2 text-slate-200" />Tidak ada tarif</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center text-sm text-slate-400 py-12"><DollarSign size={32} className="mx-auto mb-2 text-slate-200" />Tidak ada tarif</TableCell></TableRow>
                 ) : filtered.map((r) => (
                   <TableRow key={r.id} className="border-slate-100 hover:bg-slate-50/80 transition-colors">
                     <TableCell className="text-sm font-semibold text-slate-900">{r.origin_city}</TableCell>
@@ -115,6 +115,7 @@ export default function TarifPage() {
                     <TableCell><Badge className={`border text-xs font-semibold ${SERVICE_BADGE[r.service_type]}`}>{SERVICE_LABELS[r.service_type]}</Badge></TableCell>
                     <TableCell className="text-sm font-bold text-slate-900">Rp {r.price_per_kg.toLocaleString("id-ID")}</TableCell>
                     <TableCell className="text-sm text-slate-600">{r.estimated_days}</TableCell>
+                    <TableCell className="text-xs font-mono text-slate-500">÷{r.volume_divisor ?? 6000}</TableCell>
                     <TableCell>
                       <Badge className={r.is_active ? "bg-emerald-50 text-emerald-700 border-emerald-200 border text-xs font-semibold" : "bg-slate-100 text-slate-500 border-slate-200 border text-xs font-semibold"}>
                         {r.is_active ? "Aktif" : "Nonaktif"}
@@ -159,6 +160,11 @@ export default function TarifPage() {
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Harga per Kg (Rp)</label>
                 <Input type="number" value={form.price_per_kg} onChange={e => setForm(f => ({ ...f, price_per_kg: parseInt(e.target.value) || 0 }))} placeholder="10000" className="rounded-xl border-slate-200" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Divisor Volume (÷ cm³)</label>
+                <Input type="number" value={(form as Record<string,number|string|boolean>).volume_divisor as number} onChange={e => setForm(f => ({ ...f, volume_divisor: parseInt(e.target.value) || 6000 }))} placeholder="6000" className="rounded-xl border-slate-200" />
+                <p className="text-[10px] text-slate-400 mt-1">Rumus: P×L×T / divisor. Standar: 6000. Contoh rute khusus: 7000</p>
               </div>
               <div className="flex items-center gap-3">
                 <input type="checkbox" id="is_active" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} className="size-4 rounded accent-red-600" />

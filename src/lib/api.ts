@@ -60,6 +60,9 @@ export interface ShippingRateResult {
   origin: string;
   destination: string;
   weight_kg: number;
+  volumetric_weight: number | null;
+  volume_divisor: number | null;
+  chargeable_weight: number;
   rates: ShippingRate[];
 }
 
@@ -80,13 +83,19 @@ export async function trackShipment(resi: string): Promise<TrackingResult> {
 export async function calculateShippingRate(
   origin: string,
   destination: string,
-  weight_kg: number
+  weight_kg: number,
+  dimensions?: { length: number; width: number; height: number }
 ): Promise<ShippingRateResult> {
   const res = await request<{ success: boolean; data: ShippingRateResult }>(
     "/shipping-rate",
     {
       method: "POST",
-      body: JSON.stringify({ origin, destination, weight_kg }),
+      body: JSON.stringify({
+        origin,
+        destination,
+        weight_kg,
+        ...(dimensions ?? {}),
+      }),
     }
   );
   return res.data;
