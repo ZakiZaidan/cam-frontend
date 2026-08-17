@@ -199,18 +199,10 @@ export default function CekHargaPage() {
                         />
                       ))}
                     </div>
-                    {/* Live volumetric preview */}
-                    {volumetricPreview !== null && (
-                      <div className="mt-3 p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs text-gray-500 font-light space-y-1">
-                        <div className="flex justify-between">
-                          <span>Berat Volume (est.):</span>
-                          <span className="font-medium text-[#111827]">{volumetricPreview} Kg</span>
-                        </div>
-                        <div className="flex justify-between border-t border-gray-200 pt-1">
-                          <span>Acuan yg Digunakan:</span>
-                          <span className="font-semibold text-red-600">{chargeablePreview} Kg</span>
-                        </div>
-                        <p className="text-[10px] text-gray-400 pt-1">* Estimasi pakai divisor 6000. Divisor per-rute diterapkan saat submit.</p>
+                    {/* Volumetric warning */}
+                    {(length || width || height) && (
+                      <div className="mt-3 p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs text-gray-500 font-light text-center">
+                        <p>Berat volume akan dihitung berdasarkan tarif per rute saat Anda menekan tombol cek harga.</p>
                       </div>
                     )}
                   </div>
