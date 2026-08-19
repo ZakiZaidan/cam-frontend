@@ -319,3 +319,62 @@ export async function getSettings(): Promise<AdminUser> {
 export async function updateSettings(data: { name?: string; phone?: string; email?: string; password?: string; current_password?: string }): Promise<void> {
   await authRequest("/admin/settings", { method: "PATCH", body: JSON.stringify(data) });
 }
+
+// ─── Career / Job Positions ───────────────────────────────────────────────────
+
+export interface JobPosition {
+  id: number;
+  title: string;
+  type: string;
+  location: string;
+  description: string;
+  wa_text: string | null;
+  is_active: boolean;
+  sort_order: number;
+  requirements: string[];
+  benefits: string[];
+}
+
+export interface JobPositionPayload {
+  title: string;
+  type: string;
+  location: string;
+  description: string;
+  wa_text?: string;
+  is_active?: boolean;
+  sort_order?: number;
+  requirements: string[];
+  benefits: string[];
+}
+
+export async function getAdminCareer(): Promise<JobPosition[]> {
+  const res = await authRequest<{ data: JobPosition[] }>("/admin/career");
+  return res.data;
+}
+
+export async function createJobPosition(data: JobPositionPayload): Promise<JobPosition> {
+  const res = await authRequest<{ data: JobPosition }>("/admin/career", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  return res.data;
+}
+
+export async function updateJobPosition(id: number, data: JobPositionPayload): Promise<JobPosition> {
+  const res = await authRequest<{ data: JobPosition }>(`/admin/career/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  return res.data;
+}
+
+export async function toggleJobPosition(id: number): Promise<{ is_active: boolean }> {
+  const res = await authRequest<{ data: { is_active: boolean } }>(`/admin/career/${id}/toggle`, {
+    method: "PATCH",
+  });
+  return res.data;
+}
+
+export async function deleteJobPosition(id: number): Promise<void> {
+  await authRequest(`/admin/career/${id}`, { method: "DELETE" });
+}

@@ -12,7 +12,7 @@ import {
   Briefcase,
   Rocket,
   Handshake,
-  Coins
+  Coins,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -21,58 +21,42 @@ export const metadata: Metadata = {
     "Bergabunglah dengan tim CAM Cargo dan bangun karir di industri logistik & transportasi terkemuka di Kalimantan Timur.",
 };
 
-const positions = [
-  {
-    id: "sales-marketing",
-    title: "Sales Marketing",
-    type: "Full-time",
-    location: "Balikpapan, Kalimantan Timur",
-    icon: Target,
-    description:
-      "Bertanggung jawab mengembangkan jaringan pelanggan baru dan mempertahankan hubungan dengan pelanggan existing di wilayah Kalimantan Timur.",
-    requirements: [
-      "Pendidikan minimal D3/S1 semua jurusan",
-      "Pengalaman di bidang sales/marketing min. 1 tahun (fresh graduate dipersilahkan melamar)",
-      "Memiliki kemampuan komunikasi dan negosiasi yang baik",
-      "Memiliki kendaraan pribadi (SIM A/C aktif)",
-      "Berdomisili di Balikpapan atau sekitarnya",
-      "Siap bekerja dengan target",
-    ],
-    benefits: [
-      "Gaji pokok + komisi tidak terbatas",
-      "BPJS Kesehatan & Ketenagakerjaan",
-      "Tunjangan transportasi",
-      "Jenjang karir yang jelas",
-    ],
-    wa_text:
-      "Halo CAM Cargo, saya tertarik melamar posisi Sales Marketing. Nama saya [NAMA], domisili [KOTA]. Boleh saya kirim CV saya?",
-  },
-  {
-    id: "v-marketing-freelance",
-    title: "V-Marketing Freelance",
-    type: "Freelance",
-    location: "Remote / Seluruh Indonesia",
-    icon: Briefcase,
-    description:
-      "Mitra freelance yang mendapatkan komisi dari setiap pelanggan yang berhasil menggunakan layanan CAM Cargo. Semakin besar omset yang Anda hasilkan, semakin besar komisi Anda.",
-    requirements: [
-      "Memiliki jaringan bisnis atau kenalan yang potensial menjadi pelanggan",
-      "Aktif di media sosial dan mampu marketing secara digital",
-      "Komitmen dan berorientasi pada hasil",
-      "Tidak ada batasan usia atau latar belakang pendidikan",
-      "Bisa bekerja secara mandiri tanpa pengawasan langsung",
-    ],
-    benefits: [
-      "Komisi 5% – 10% dari omset yang dihasilkan",
-      "Tidak ada target minimum — bekerja sesuai kemampuan",
-      "Fleksibel: kerja dari mana saja, kapan saja",
-      "Potensi penghasilan tidak terbatas",
-      "Dukungan materi promosi dari CAM Cargo",
-    ],
-    wa_text:
-      "Halo CAM Cargo, saya tertarik menjadi V-Marketing Freelance. Nama saya [NAMA], domisili [KOTA]. Boleh saya tahu lebih lanjut tentang programnya?",
-  },
-];
+// ─── Icon mapping by job type ────────────────────────────────────────────────
+const TYPE_ICONS: Record<string, React.ElementType> = {
+  "Full-time": Target,
+  "Part-time": Clock,
+  "Freelance": Briefcase,
+  "Kontrak":   Users,
+  "Magang":    Rocket,
+};
+const getIcon = (type: string): React.ElementType =>
+  TYPE_ICONS[type] ?? Briefcase;
+
+// ─── Fetch from API ───────────────────────────────────────────────────────────
+interface ApiPosition {
+  id: number;
+  title: string;
+  type: string;
+  location: string;
+  description: string;
+  wa_text: string | null;
+  requirements: string[];
+  benefits: string[];
+}
+
+async function getPositions(): Promise<ApiPosition[]> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+  try {
+    const res = await fetch(`${apiUrl}/career`, {
+      next: { revalidate: 60 }, // revalidate every 60 seconds
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data ?? [];
+  } catch {
+    return [];
+  }
+}
 
 const values = [
   {
@@ -97,7 +81,9 @@ const values = [
   },
 ];
 
-export default function KarirPage() {
+export default async function KarirPage() {
+  const positions = await getPositions();
+
   return (
     <>
       <Navbar />
@@ -182,19 +168,23 @@ export default function KarirPage() {
           </div>
 
           <div className="flex flex-col gap-8">
-            {positions.map((pos) => (
+            {positions.length === 0 ? (
+              <div className="text-center py-16 text-gray-400 font-light">
+                Belum ada posisi yang tersedia saat ini. Silakan cek kembali nanti.
+              </div>
+            ) : positions.map((pos) => {
+              const Icon = getIcon(pos.type);
+              return (
               <article
                 key={pos.id}
-                id={pos.id}
+                id={String(pos.id)}
                 className="group border border-gray-100 rounded-3xl overflow-hidden hover:border-gray-200 hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-300 bg-white"
               >
                 {/* Header */}
                 <div className="bg-gray-50/50 px-8 py-8 flex flex-col md:flex-row md:items-center gap-6 border-b border-gray-100 relative overflow-hidden">
-                  {/* Subtle red accent left */}
                   <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
                   <div className="w-14 h-14 bg-white shadow-sm border border-gray-100 flex items-center justify-center rounded-2xl text-red-600 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <pos.icon size={26} strokeWidth={1.5} />
+                    <Icon size={26} strokeWidth={1.5} />
                   </div>
                   <div>
                     <h3 className="text-xl font-medium text-[#111827] mb-2 group-hover:text-red-600 transition-colors duration-300">
@@ -202,81 +192,56 @@ export default function KarirPage() {
                     </h3>
                     <div className="flex flex-wrap gap-4">
                       <span className="flex items-center gap-1.5 text-xs text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-100 shadow-sm">
-                        <Clock size={12} className="text-gray-400" />
-                        {pos.type}
+                        <Clock size={12} className="text-gray-400" />{pos.type}
                       </span>
                       <span className="flex items-center gap-1.5 text-xs text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-100 shadow-sm">
-                        <MapPin size={12} className="text-gray-400" />
-                        {pos.location}
+                        <MapPin size={12} className="text-gray-400" />{pos.location}
                       </span>
                     </div>
                   </div>
                   <a
-                    href={`https://wa.me/6281146602305?text=${encodeURIComponent(pos.wa_text)}`}
+                    href={`https://wa.me/6281146602305?text=${encodeURIComponent(pos.wa_text ?? `Halo CAM Cargo, saya tertarik melamar posisi ${pos.title}.`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="md:ml-auto nics-pill mt-4 md:mt-0 group/btn"
                   >
                     <span className="nics-pill__text">
                       <span className="nics-pill__label flex items-center gap-2">
-                        <Send size={14} className="opacity-70 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" /> 
+                        <Send size={14} className="opacity-70 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                         Daftar Sekarang
                       </span>
                     </span>
-                    <span className="nics-pill__badge">
-                      <ArrowRight size={16} />
-                    </span>
+                    <span className="nics-pill__badge"><ArrowRight size={16} /></span>
                   </a>
                 </div>
 
                 {/* Body */}
                 <div className="px-8 py-10 grid md:grid-cols-12 gap-12">
-                  {/* Description */}
-                  <div className="md:col-span-12 lg:col-span-12">
-                    <p className="text-gray-600 font-light leading-relaxed text-[15px] max-w-4xl">
-                      {pos.description}
-                    </p>
+                  <div className="md:col-span-12">
+                    <p className="text-gray-600 font-light leading-relaxed text-[15px] max-w-4xl">{pos.description}</p>
                   </div>
-
-                  {/* Requirements */}
                   <div className="md:col-span-7">
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400">
-                        <Users size={14} />
-                      </div>
-                      <h4 className="text-sm font-medium text-[#111827]">
-                        Kualifikasi
-                      </h4>
+                      <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400"><Users size={14} /></div>
+                      <h4 className="text-sm font-medium text-[#111827]">Kualifikasi</h4>
                     </div>
                     <ul className="space-y-4">
-                      {pos.requirements.map((r) => (
-                        <li
-                          key={r}
-                          className="flex items-start gap-3 text-[14px] text-gray-600 font-light"
-                        >
+                      {pos.requirements.map((r, i) => (
+                        <li key={i} className="flex items-start gap-3 text-[14px] text-gray-600 font-light">
                           <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0" />
                           <span className="leading-relaxed">{r}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-
-                  {/* Benefits */}
                   <div className="md:col-span-5 bg-gray-50/50 p-6 rounded-2xl border border-gray-100/50">
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-green-500">
-                        <TrendingUp size={14} />
-                      </div>
-                      <h4 className="text-sm font-medium text-[#111827]">
-                        Yang Anda Dapatkan
-                      </h4>
+                      <div className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-green-500"><TrendingUp size={14} /></div>
+                      <h4 className="text-sm font-medium text-[#111827]">Yang Anda Dapatkan</h4>
                     </div>
                     <ul className="space-y-4">
-                      {pos.benefits.map((b) => (
-                        <li
-                          key={b}
-                          className="flex items-start gap-3 text-[14px] text-gray-600 font-light"
-                        >
+                      {pos.benefits.map((b, i) => (
+                        <li key={i} className="flex items-start gap-3 text-[14px] text-gray-600 font-light">
                           <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
                           <span className="leading-relaxed">{b}</span>
                         </li>
@@ -285,7 +250,8 @@ export default function KarirPage() {
                   </div>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         </section>
 

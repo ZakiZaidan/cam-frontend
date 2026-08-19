@@ -12,7 +12,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 import {
   LayoutDashboard, Package, Users, Truck, DollarSign,
   BarChart3, FileText, Settings, Bell, Search, Menu,
-  LogOut, Edit,
+  LogOut, Edit, Briefcase,
 } from "lucide-react";
 import { logout, getMe, type AdminUser } from "@/lib/admin-api";
 
@@ -24,6 +24,7 @@ const SIDEBAR_ITEMS = [
   { icon: <DollarSign size={18} />,     label: "Tarif",       href: "/admin/tarif" },
   { icon: <BarChart3 size={18} />,      label: "Keuangan",    href: "/admin/keuangan" },
   { icon: <FileText size={18} />,       label: "Laporan",     href: "/admin/laporan" },
+  { icon: <Briefcase size={18} />,      label: "Karir",       href: "/admin/karir" },
   { icon: <Edit size={18} />,           label: "Konten",      href: "/admin/konten" },
   { icon: <Settings size={18} />,       label: "Pengaturan",  href: "/admin/pengaturan" },
 ];
