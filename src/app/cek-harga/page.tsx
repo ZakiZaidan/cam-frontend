@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
@@ -14,8 +14,162 @@ import {
   Clock,
   ShieldCheck,
   Package,
+  Search,
+  X,
+  ChevronDown,
 } from "lucide-react";
 import { calculateShippingRate, getAvailableCities, ShippingRateResult } from "@/lib/api";
+
+// ─── Searchable City Combobox ─────────────────────────────────────────────────
+function CitySearch({
+  value, onChange, cities, placeholder, id,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  cities: string[];
+  placeholder: string;
+  id: string;
+}) {
+  const [query, setQuery]     = useState(value);
+  const [open, setOpen]       = useState(false);
+  const [focused, setFocused] = useState(-1);
+  const containerRef          = useRef<HTMLDivElement>(null);
+  const listRef               = useRef<HTMLUListElement>(null);
+
+  // Sync query when value is reset from outside
+  useEffect(() => { setQuery(value); }, [value]);
+
+  const filtered = useCallback(() => {
+    if (!query.trim()) return cities.slice(0, 80);
+    const q = query.toLowerCase();
+    const startsWith: string[] = [];
+    const contains:   string[] = [];
+    for (const c of cities) {
+      const lower = c.toLowerCase();
+      if (lower.startsWith(q))       startsWith.push(c);
+      else if (lower.includes(q))    contains.push(c);
+    }
+    return [...startsWith, ...contains].slice(0, 80);
+  }, [query, cities]);
+
+  const results = filtered();
+
+  const select = (city: string) => {
+    onChange(city);
+    setQuery(city);
+    setOpen(false);
+    setFocused(-1);
+  };
+
+  const clear = () => {
+    onChange("");
+    setQuery("");
+    setOpen(true);
+    setFocused(-1);
+  };
+
+  // Close on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        // If nothing selected, reset query
+        if (!value) setQuery("");
+        else setQuery(value);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [value]);
+
+  // Keyboard nav
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (!open) { if (e.key === "ArrowDown" || e.key === "Enter") setOpen(true); return; }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setFocused((f) => Math.min(f + 1, results.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setFocused((f) => Math.max(f - 1, 0));
+    } else if (e.key === "Enter" && focused >= 0) {
+      e.preventDefault();
+      select(results[focused]);
+    } else if (e.key === "Escape") {
+      setOpen(false);
+      setQuery(value);
+    }
+  };
+
+  // Scroll focused item into view
+  useEffect(() => {
+    if (focused >= 0 && listRef.current) {
+      const item = listRef.current.children[focused] as HTMLElement;
+      item?.scrollIntoView({ block: "nearest" });
+    }
+  }, [focused]);
+
+  const isSelected = value && value === query;
+
+  return (
+    <div ref={containerRef} className="relative" id={id}>
+      {/* Input */}
+      <div className={`flex items-center border-b-2 transition-colors ${
+        open ? "border-[#3D4550]" : "border-gray-200"
+      }`}>
+        <Search size={14} className="text-gray-400 flex-shrink-0 mr-2" />
+        <input
+          type="text"
+          value={query}
+          placeholder={placeholder}
+          onChange={(e) => { setQuery(e.target.value); setOpen(true); setFocused(-1); onChange(""); }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={onKeyDown}
+          autoComplete="off"
+          className="flex-1 bg-transparent py-3 text-[#111827] text-base font-light focus:outline-none placeholder:text-gray-300"
+        />
+        {isSelected ? (
+          <button type="button" onClick={clear} className="text-gray-400 hover:text-gray-600 transition flex-shrink-0">
+            <X size={14} />
+          </button>
+        ) : (
+          <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+        )}
+      </div>
+
+      {/* Dropdown */}
+      {open && results.length > 0 && (
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-100 rounded-2xl shadow-2xl shadow-gray-200/60 overflow-hidden">
+          <ul
+            ref={listRef}
+            className="max-h-56 overflow-y-auto py-1"
+            style={{ scrollbarWidth: "thin" }}
+          >
+            {results.map((city, i) => (
+              <li
+                key={city}
+                onMouseDown={() => select(city)}
+                className={`flex items-center gap-2.5 px-4 py-2.5 cursor-pointer text-sm transition-colors ${
+                  i === focused
+                    ? "bg-gray-100 text-[#111827]"
+                    : city === value
+                    ? "bg-red-50 text-red-700"
+                    : "text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                <MapPin size={11} className={city === value ? "text-red-500" : "text-gray-300"} />
+                <span className="leading-tight">{city}</span>
+              </li>
+            ))}
+          </ul>
+          {query && results.length === 0 && (
+            <div className="px-4 py-4 text-sm text-gray-400 text-center">Kota tidak ditemukan</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 export default function CekHargaPage() {
   const [origin, setOrigin] = useState("");
@@ -129,16 +283,13 @@ export default function CekHargaPage() {
                     <label className="block text-xs font-medium text-gray-400 tracking-wider uppercase mb-3">
                       <MapPin size={12} className="inline mr-1" /> Kota Asal
                     </label>
-                    <select
+                    <CitySearch
+                      id="origin-search"
                       value={origin}
-                      onChange={(e) => setOrigin(e.target.value)}
-                      className="w-full bg-transparent border-b-2 border-gray-200 focus:border-[#3D4550] py-3 text-[#111827] text-base font-light focus:outline-none transition-colors appearance-none cursor-pointer"
-                    >
-                      <option value="">Pilih kota asal</option>
-                      {cities.map((city) => (
-                        <option key={city} value={city}>{city}</option>
-                      ))}
-                    </select>
+                      onChange={setOrigin}
+                      cities={cities}
+                      placeholder="Cari kota asal..."
+                    />
                   </div>
 
                   {/* Destination */}
@@ -146,16 +297,13 @@ export default function CekHargaPage() {
                     <label className="block text-xs font-medium text-gray-400 tracking-wider uppercase mb-3">
                       <MapPin size={12} className="inline mr-1" /> Kota Tujuan
                     </label>
-                    <select
+                    <CitySearch
+                      id="destination-search"
                       value={destination}
-                      onChange={(e) => setDestination(e.target.value)}
-                      className="w-full bg-transparent border-b-2 border-gray-200 focus:border-[#3D4550] py-3 text-[#111827] text-base font-light focus:outline-none transition-colors appearance-none cursor-pointer"
-                    >
-                      <option value="">Pilih kota tujuan</option>
-                      {cities.map((city) => (
-                        <option key={city} value={city}>{city}</option>
-                      ))}
-                    </select>
+                      onChange={setDestination}
+                      cities={cities}
+                      placeholder="Cari kota tujuan..."
+                    />
                   </div>
 
                   {/* Weight */}
