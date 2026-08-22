@@ -9,7 +9,7 @@ export const COMPANY = {
   founded: 2023,
   whatsapp: "6281146602305",
   whatsappDisplay: "0811-4660-2305",
-  email: "info@camcargo.co.id",
+  email: "info@camlogexpress.com",
   address: "Balikpapan, Kalimantan Timur, Indonesia",
   mapUrl: "https://maps.app.goo.gl/LkmMApPBeytVKxDy9",
   social: {

@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   title: "Tentang Kami — Profil CAM Cargo Balikpapan",
   description:
     "Mengenal lebih dekat CAM Cargo (PT. Cipta Astama Mandala), perusahaan ekspedisi dan logistik berpusat di Balikpapan, Kalimantan Timur. Visi, misi, dan komitmen kami untuk pengiriman terbaik.",
-  alternates: { canonical: "https://camcargo.co.id/tentang" },
+  alternates: { canonical: "https://camlogexpress.com/tentang" },
   openGraph: {
     title: "Tentang CAM Cargo — Ekspedisi Terpercaya Balikpapan",
     description: "Profil lengkap PT. Cipta Astama Mandala (CAM Cargo), ekspedisi logistik Balikpapan yang melayani pengiriman ke seluruh Indonesia.",
-    url: "https://camcargo.co.id/tentang",
+    url: "https://camlogexpress.com/tentang",
   },
 };
 

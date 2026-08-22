@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@camcargo.co.id"
+                  placeholder="admin@camlogexpress.com"
                   className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-300 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
                 />
               </div>
@@ -123,7 +123,7 @@ export default function AdminLoginPage() {
           {/* Default credentials hint */}
           <div className="mt-6 p-3 rounded-xl bg-slate-50 border border-slate-200">
             <p className="text-xs text-slate-500 text-center">
-              Default: <span className="font-mono font-bold text-slate-700">admin@camcargo.co.id</span> / <span className="font-mono font-bold text-slate-700">admin123</span>
+              Default: <span className="font-mono font-bold text-slate-700">admin@camlogexpress.com</span> / <span className="font-mono font-bold text-slate-700">admin123</span>
             </p>
           </div>
         </div>

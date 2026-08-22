@@ -15,11 +15,11 @@ export const metadata: Metadata = {
   title: "Fasilitas — Legalitas, Warehouse & Armada CAM Cargo Balikpapan",
   description:
     "Fasilitas unggulan CAM Cargo Balikpapan: legalitas usaha resmi (KBLI & NIB), warehouse memadai, armada lengkap, dan call center 24/7 untuk solusi logistik terpercaya di Kalimantan Timur.",
-  alternates: { canonical: "https://camcargo.co.id/fasilitas" },
+  alternates: { canonical: "https://camlogexpress.com/fasilitas" },
   openGraph: {
     title: "Fasilitas CAM Cargo — Legalitas, Warehouse & Armada",
     description: "Fasilitas lengkap ekspedisi CAM Cargo Balikpapan: legalitas resmi, gudang, armada, dan layanan 24/7.",
-    url: "https://camcargo.co.id/fasilitas",
+    url: "https://camlogexpress.com/fasilitas",
   },
 };
 

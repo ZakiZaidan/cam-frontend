@@ -13,11 +13,11 @@ export const metadata: Metadata = {
   title: "CAM Cargo — Jasa Pengiriman Barang, Motor, Mobil & Alat Berat Balikpapan",
   description:
     "CAM Cargo, ekspedisi terpercaya di Balikpapan Kalimantan Timur. Kirim barang, motor, mobil, alat berat, pindahan, via udara ke seluruh Indonesia. Asuransi, door-to-door, tracking real-time.",
-  alternates: { canonical: "https://camcargo.co.id" },
+  alternates: { canonical: "https://camlogexpress.com" },
   openGraph: {
     title: "CAM Cargo — Ekspedisi Terpercaya Balikpapan",
     description: "Jasa pengiriman barang, motor, mobil, alat berat dan pindahan dari Balikpapan ke seluruh Indonesia.",
-    url: "https://camcargo.co.id",
+    url: "https://camlogexpress.com",
     images: [{ url: "/images/cargo-shipping.png", width: 1200, height: 630 }],
   },
 };

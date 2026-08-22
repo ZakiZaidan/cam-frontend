@@ -21,11 +21,11 @@ export const metadata: Metadata = {
   title: "Layanan — Ekspedisi Balikpapan: Kirim Barang, Motor, Mobil & Alat Berat",
   description:
     "Lengkap! Layanan CAM Cargo Balikpapan: kirim barang reguler, motor, mobil, alat berat, pindahan, via udara, project cargo, charter kendaraan, hingga sewa Mother Vessel dan Tongkang ke seluruh Indonesia.",
-  alternates: { canonical: "https://camcargo.co.id/layanan" },
+  alternates: { canonical: "https://camlogexpress.com/layanan" },
   openGraph: {
     title: "Layanan CAM Cargo — Kirim Barang, Motor, Mobil & Alat Berat",
     description: "9 layanan pengiriman CAM Cargo Balikpapan: barang, motor, mobil, alat berat, pindahan, udara, project, charter kendaraan, dan kapal laut ke seluruh Indonesia.",
-    url: "https://camcargo.co.id/layanan",
+    url: "https://camlogexpress.com/layanan",
   },
 };
 

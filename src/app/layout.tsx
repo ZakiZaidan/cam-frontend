@@ -108,7 +108,7 @@ export default function RootLayout({
         description:
           "Jasa ekspedisi dan logistik terpercaya di Balikpapan, Kalimantan Timur. Layanan pengiriman barang, motor, mobil, dan alat berat via darat, laut, dan udara ke seluruh Indonesia.",
         telephone: "+6281146602305",
-        email: "info@camcargo.co.id",
+        email: "info@camlogexpress.com",
         address: {
           "@type": "PostalAddress",
           addressLocality: "Balikpapan",
