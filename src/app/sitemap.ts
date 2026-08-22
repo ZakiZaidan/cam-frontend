@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { SERVICES } from "@/lib/constants";
 
-const BASE_URL = "https://camcargo.co.id";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://camlogexpress.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
