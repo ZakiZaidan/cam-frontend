@@ -13,7 +13,7 @@ const notoSansJP = Noto_Sans_JP({
   display: "swap",
 });
 
-const BASE_URL = "https://camcargo.co.id";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://camlogexpress.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
