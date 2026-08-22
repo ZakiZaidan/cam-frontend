@@ -208,17 +208,18 @@ export default function CekHargaPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!origin || !destination || !weight || !length || !width || !height) return;
+    if (!origin || !destination || !weight) return;
     setIsLoading(true);
     setError("");
     try {
+      // Mode saat ini: hanya hitung per kg (dimensi belum aktif)
       const res = await calculateShippingRate(
-        origin, destination, parseFloat(weight),
-        { length: parseFloat(length), width: parseFloat(width), height: parseFloat(height) }
+        origin, destination, parseFloat(weight)
       );
       setResults(res);
     } catch (err: unknown) {
-      setError((err as Error).message || "Gagal menghitung tarif.");
+      const msg = (err as Error).message || "Gagal menghitung tarif.";
+      setError(msg);
       setResults(null);
     } finally {
       setIsLoading(false);
@@ -251,7 +252,7 @@ export default function CekHargaPage() {
               style={{ backgroundImage: "url('/images/car-transport.png')" }}
             />
           </div>
-          <div className="relative z-10 px-12 md:px-20 lg:px-32 xl:px-44 pb-20 pt-32 lg:pt-48 w-full max-w-[1500px] mx-auto">
+          <div className="relative z-10 px-5 md:px-20 lg:px-32 xl:px-44 pb-20 pt-32 lg:pt-48 w-full max-w-[1500px] mx-auto">
             <h1 className="text-white leading-[1] tracking-tight">
               <span className="block font-light text-5xl lg:text-7xl mb-2">
                 Pricing Calculator
@@ -267,7 +268,7 @@ export default function CekHargaPage() {
         </section>
 
         {/* Main Content — light section */}
-        <section className="bg-white px-12 md:px-20 lg:px-32 xl:px-44 py-24 lg:py-36 max-w-[1500px] mx-auto">
+        <section className="bg-white px-5 md:px-20 lg:px-32 xl:px-44 py-16 lg:py-36 max-w-[1500px] mx-auto">
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-20">
             {/* Form — Left */}
             <div className="lg:col-span-2">
@@ -323,42 +324,36 @@ export default function CekHargaPage() {
                     />
                   </div>
 
-                  {/* Dimensions */}
-                  <div>
-                    <label className="block text-xs font-medium text-gray-400 tracking-wider uppercase mb-3">
-                      <Package size={12} className="inline mr-1" /> Dimensi (cm) — Panjang × Lebar × Tinggi
-                    </label>
+                  {/* Dimensions — disabled, coming soon */}
+                  <div className="opacity-50">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="block text-xs font-medium text-gray-400 tracking-wider uppercase">
+                        <Package size={12} className="inline mr-1" /> Dimensi (cm) — Panjang × Lebar × Tinggi
+                      </label>
+                      <span className="text-[10px] font-semibold tracking-wider uppercase bg-amber-100 text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">
+                        Segera Hadir
+                      </span>
+                    </div>
                     <div className="grid grid-cols-3 gap-3">
-                      {[
-                        { val: length, set: setLength, ph: "Panjang" },
-                        { val: width,  set: setWidth,  ph: "Lebar"   },
-                        { val: height, set: setHeight, ph: "Tinggi"  },
-                      ].map(({ val, set, ph }) => (
+                      {["Panjang", "Lebar", "Tinggi"].map((ph) => (
                         <input
                           key={ph}
                           type="number"
-                          min="1"
-                          step="1"
-                          value={val}
-                          onChange={(e) => set(e.target.value)}
+                          disabled
                           placeholder={ph}
-                          required
-                          className="w-full bg-transparent border-b-2 border-gray-200 focus:border-[#3D4550] py-3 text-[#111827] text-base font-light focus:outline-none transition-colors placeholder:text-gray-300 text-center"
+                          className="w-full bg-gray-50 border-b-2 border-gray-100 py-3 text-gray-300 text-base font-light focus:outline-none cursor-not-allowed text-center rounded-t-md"
                         />
                       ))}
                     </div>
-                    {/* Volumetric warning */}
-                    {(length || width || height) && (
-                      <div className="mt-3 p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs text-gray-500 font-light text-center">
-                        <p>Berat volume akan dihitung berdasarkan tarif per rute saat Anda menekan tombol cek harga.</p>
-                      </div>
-                    )}
+                    <p className="mt-2 text-[11px] text-gray-400 font-light">
+                      Kalkulasi berat volume (P&times;L&times;T) akan segera tersedia.
+                    </p>
                   </div>
 
                   {/* Submit pill */}
                   <button
                     type="submit"
-                    disabled={isLoading || !origin || !destination || !weight || !length || !width || !height}
+                    disabled={isLoading || !origin || !destination || !weight}
                     className="nics-pill group mt-4 self-start disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <span className="nics-pill__text">
@@ -372,34 +367,74 @@ export default function CekHargaPage() {
                   </button>
                 </div>
               </form>
+
+              {/* Catatan rute tidak tersedia — selalu tampil */}
+              <div className="mt-8 p-5 border border-gray-100 rounded-2xl bg-gray-50/60 flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-white border border-gray-100 shadow-sm flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-700 mb-1">Rute tidak tersedia?</p>
+                  <p className="text-sm text-gray-500 font-light leading-relaxed">
+                    Jika rute yang Anda cari belum ada di sistem, silakan{" "}
+                    <a
+                      href="https://wa.me/6281146602305?text=Halo%20CAM%20Cargo%2C%20saya%20ingin%20menanyakan%20tarif%20pengiriman%20untuk%20rute%20yang%20belum%20tersedia%20di%20website."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-red-600 font-medium hover:underline transition"
+                    >
+                      hubungi admin via WhatsApp
+                    </a>
+                    {" "}— kami siap membantu memberikan informasi tarif terbaik untuk Anda.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Results — Right */}
             <div className="lg:col-span-3">
               {/* Error Message */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-sm flex items-start gap-3">
-                  <span className="font-semibold text-red-700">Error:</span> {error}
+                <div className="mb-6 p-5 bg-red-50 border border-red-100 rounded-2xl text-sm space-y-2">
+                  <p className="text-red-600 font-medium">{error}</p>
+                  <p className="text-gray-500 font-light text-[13px]">
+                    Rute yang Anda cari mungkin belum tersedia di sistem kami.
+                    Silakan{" "}
+                    <a
+                      href="https://wa.me/6281146602305?text=Halo%20CAM%20Cargo%2C%20saya%20ingin%20menanyakan%20tarif%20pengiriman%20untuk%20rute%20yang%20belum%20tersedia."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-red-600 font-medium underline underline-offset-2 hover:text-red-700 transition"
+                    >
+                      hubungi admin via WhatsApp
+                    </a>
+                    {" "}untuk informasi tarif lebih lanjut.
+                  </p>
                 </div>
               )}
 
               {results ? (
                 <div>
                   {/* Route Summary + Weight Breakdown */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm mb-6 pb-6 border-b border-gray-100">
-                    <span className="font-medium text-[#111827]">{results.origin}</span>
-                    <ArrowRight className="text-gray-300" size={16} />
-                    <span className="font-medium text-[#111827]">{results.destination}</span>
-                    <div className="ml-auto flex flex-col items-end gap-1">
-                      <span className="text-xs font-medium text-gray-400 border border-gray-200 px-3 py-1 rounded-full">
+                  {/* Route Summary + Weight Breakdown */}
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-4 text-sm mb-6 pb-6 border-b border-gray-100">
+                    <div className="flex flex-wrap items-center gap-2 md:gap-4">
+                      <span className="font-medium text-[#111827]">{results.origin}</span>
+                      <ArrowRight className="text-gray-300 shrink-0" size={16} />
+                      <span className="font-medium text-[#111827]">{results.destination}</span>
+                    </div>
+                    <div className="sm:ml-auto flex flex-row sm:flex-col items-center sm:items-end flex-wrap gap-2 sm:gap-1">
+                      <span className="text-[11px] sm:text-xs font-medium text-gray-400 border border-gray-200 px-3 py-1 rounded-full">
                         Aktual: {results.weight_kg} Kg
                       </span>
                       {results.volumetric_weight !== null && (
-                        <span className="text-xs font-medium text-amber-600 border border-amber-200 bg-amber-50 px-3 py-1 rounded-full">
+                        <span className="text-[11px] sm:text-xs font-medium text-amber-600 border border-amber-200 bg-amber-50 px-3 py-1 rounded-full">
                           Volume: {results.volumetric_weight} Kg
                         </span>
                       )}
-                      <span className="text-xs font-semibold text-red-600 border border-red-200 bg-red-50 px-3 py-1 rounded-full">
+                      <span className="text-[11px] sm:text-xs font-semibold text-red-600 border border-red-200 bg-red-50 px-3 py-1 rounded-full">
                         Acuan: {results.chargeable_weight} Kg
                         {results.volume_divisor && ` ÷${results.volume_divisor}`}
                       </span>
@@ -425,7 +460,7 @@ export default function CekHargaPage() {
                                 Rekomendasi
                               </span>
                             )}
-                            <div className="flex items-start justify-between gap-6">
+                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
                               <div className="flex items-start gap-4">
                                 <div className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center flex-shrink-0">
                                   <IconComp size={20} className="text-gray-500" />
@@ -447,7 +482,7 @@ export default function CekHargaPage() {
                                   </div>
                                 </div>
                               </div>
-                              <div className="text-right shrink-0">
+                              <div className="sm:text-right shrink-0">
                                 <p
                                   className="font-extralight text-[#111827]"
                                   style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}
