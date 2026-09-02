@@ -74,9 +74,9 @@ export default async function ServiceDetailPage({ params }: { params: Params }) 
     waText?: string;
   };
 
-  const gallery = await getGalleryFromApi(slug);
-  // Fallback ke data hardcoded di constants.ts jika galeri di database masih kosong
-  const finalGallery = gallery.length > 0 ? gallery : (svc.gallery ?? []);
+  const apiGallery = await getGalleryFromApi(slug);
+  // Gabungkan: gambar lama (dari constants.ts) + gambar baru (dari database admin)
+  const finalGallery = [...(svc.gallery ?? []), ...apiGallery];
   const features = svc.features ?? [];
   const heroImage = svc.heroImage ?? "/images/cargo-shipping.png";
   const waText = svc.waText ?? encodeURIComponent(service.title);
