@@ -378,3 +378,52 @@ export async function toggleJobPosition(id: number): Promise<{ is_active: boolea
 export async function deleteJobPosition(id: number): Promise<void> {
   await authRequest(`/admin/career/${id}`, { method: "DELETE" });
 }
+
+// ─── Gallery API ───────────────────────────────────────────────────────────────
+
+export interface GalleryImage {
+  id: number;
+  service_slug: string;
+  image_path: string;
+  url: string;
+  caption: string | null;
+  sort_order: number;
+}
+
+export async function getAdminGallery(slug: string): Promise<GalleryImage[]> {
+  const res = await authRequest<{ data: GalleryImage[] }>(`/admin/gallery?slug=${slug}`);
+  return res.data;
+}
+
+export async function uploadGalleryImage(
+  serviceSlug: string,
+  file: File,
+  caption?: string
+): Promise<GalleryImage> {
+  const token = getToken();
+  const formData = new FormData();
+  formData.append("service_slug", serviceSlug);
+  formData.append("image", file);
+  if (caption) formData.append("caption", caption);
+
+  const res = await fetch(`${API_BASE}/admin/gallery`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || "Gagal mengupload gambar");
+  }
+
+  const json = await res.json();
+  return json.data;
+}
+
+export async function deleteGalleryImage(id: number): Promise<void> {
+  await authRequest(`/admin/gallery/${id}`, { method: "DELETE" });
+}

@@ -16,6 +16,19 @@ import {
 
 type Params = Promise<{ slug: string }>;
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+
+async function getGalleryFromApi(slug: string): Promise<string[]> {
+  try {
+    const res = await fetch(`${API_BASE}/gallery?slug=${slug}`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return (json.data ?? []).map((img: { url: string }) => img.url);
+  } catch {
+    return [];
+  }
+}
+
 export async function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }));
 }
@@ -61,7 +74,9 @@ export default async function ServiceDetailPage({ params }: { params: Params }) 
     waText?: string;
   };
 
-  const gallery = svc.gallery ?? [];
+  const gallery = await getGalleryFromApi(slug);
+  // Fallback ke data hardcoded di constants.ts jika galeri di database masih kosong
+  const finalGallery = gallery.length > 0 ? gallery : (svc.gallery ?? []);
   const features = svc.features ?? [];
   const heroImage = svc.heroImage ?? "/images/cargo-shipping.png";
   const waText = svc.waText ?? encodeURIComponent(service.title);
@@ -184,7 +199,7 @@ export default async function ServiceDetailPage({ params }: { params: Params }) 
         )}
 
         {/* ── 3. Dokumentasi Gallery ───────────────────── */}
-        <GallerySlider images={gallery} title={service.title} />
+        <GallerySlider images={finalGallery} title={service.title} />
 
         {/* ── 4. FAQ + Sidebar ──────────────────────────── */}
         <section className="px-6 lg:px-24 pb-16 lg:pb-32 max-w-[1400px] mx-auto">
