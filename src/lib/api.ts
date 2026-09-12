@@ -73,6 +73,22 @@ export async function getAvailableCities(): Promise<string[]> {
   return res.data;
 }
 
+// Cascading dropdown types
+export interface StructuredCity {
+  name: string;
+  kelurahan: string[] | null; // null = kota langsung (tanpa kelurahan)
+}
+
+export interface ProvinceData {
+  province: string;
+  cities: StructuredCity[];
+}
+
+export async function getStructuredCities(): Promise<ProvinceData[]> {
+  const res = await request<{ success: boolean; data: ProvinceData[] }>("/cities/structured");
+  return res.data;
+}
+
 export async function trackShipment(resi: string): Promise<TrackingResult> {
   const res = await request<{ success: boolean; data: TrackingResult }>(
     `/tracking/${encodeURIComponent(resi.toUpperCase())}`
