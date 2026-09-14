@@ -15,11 +15,11 @@ function SearchableSelect({ id, value, onChange, options, placeholder, disabled 
   id: string; value: string; onChange: (v: string) => void;
   options: string[]; placeholder: string; disabled?: boolean;
 }) {
-  const [query, setQuery]     = useState(value);
-  const [open, setOpen]       = useState(false);
+  const [query, setQuery] = useState(value);
+  const [open, setOpen] = useState(false);
   const [focused, setFocused] = useState(-1);
-  const containerRef          = useRef<HTMLDivElement>(null);
-  const listRef               = useRef<HTMLUListElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
 
   // Sync display when value changes externally (e.g. reset from parent)
   useEffect(() => { setQuery(value); }, [value]);
@@ -39,7 +39,7 @@ function SearchableSelect({ id, value, onChange, options, placeholder, disabled 
   const items = results();
 
   const select = (v: string) => { onChange(v); setQuery(v); setOpen(false); setFocused(-1); };
-  const clear  = () => { onChange(""); setQuery(""); setOpen(true); setFocused(-1); };
+  const clear = () => { onChange(""); setQuery(""); setOpen(true); setFocused(-1); };
 
   // Close on outside click
   useEffect(() => {
@@ -96,11 +96,10 @@ function SearchableSelect({ id, value, onChange, options, placeholder, disabled 
             <ul ref={listRef} className="max-h-52 overflow-y-auto py-1" style={{ scrollbarWidth: "thin" }}>
               {items.map((item, i) => (
                 <li key={item} onMouseDown={() => select(item)}
-                  className={`flex items-center gap-2.5 px-4 py-2.5 cursor-pointer text-sm transition-colors ${
-                    i === focused ? "bg-gray-100 text-[#111827]"
-                    : item === value ? "bg-red-50 text-red-700"
-                    : "text-gray-700 hover:bg-gray-50"
-                  }`}>
+                  className={`flex items-center gap-2.5 px-4 py-2.5 cursor-pointer text-sm transition-colors ${i === focused ? "bg-gray-100 text-[#111827]"
+                      : item === value ? "bg-red-50 text-red-700"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}>
                   <MapPin size={10} className={item === value ? "text-red-400" : "text-gray-300"} />
                   <span className="leading-tight">{item}</span>
                 </li>
@@ -122,8 +121,8 @@ function LocationPicker({ idPrefix, label, kaltimKelurahanMap, onValueChange, sh
   onValueChange: (city: string) => void;
   showKelurahan?: boolean;
 }) {
-  const [province, setProvince]   = useState("");
-  const [city, setCity]           = useState("");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
   const [kelurahan, setKelurahan] = useState("");
 
   const citiesInProv = useMemo(
@@ -189,13 +188,13 @@ function LocationPicker({ idPrefix, label, kaltimKelurahanMap, onValueChange, sh
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function CekHargaPage() {
-  const [kaltimData, setKaltimData]   = useState<ProvinceData[]>([]);
-  const [originVal, setOriginVal]     = useState("");
-  const [destVal, setDestVal]         = useState("");
-  const [weight, setWeight]           = useState("");
-  const [results, setResults]         = useState<ShippingRateResult | null>(null);
-  const [isLoading, setIsLoading]     = useState(false);
-  const [error, setError]             = useState("");
+  const [kaltimData, setKaltimData] = useState<ProvinceData[]>([]);
+  const [originVal, setOriginVal] = useState("");
+  const [destVal, setDestVal] = useState("");
+  const [weight, setWeight] = useState("");
+  const [results, setResults] = useState<ShippingRateResult | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getStructuredCities().then(setKaltimData).catch(console.error);
@@ -283,8 +282,12 @@ export default function CekHargaPage() {
                     <label className="block text-xs font-medium text-gray-400 tracking-wider uppercase mb-3">
                       <Weight size={12} className="inline mr-1" /> Berat Aktual (Kg)
                     </label>
-                    <input type="number" min="0.1" step="0.1" value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
+                    <input type="number" min="10" step="1" value={weight}
+                      onChange={(e) => {
+                        setWeight(e.target.value);
+                        e.target.setCustomValidity("");
+                      }}
+                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Berat minimal pengiriman adalah 10 Kg.")}
                       placeholder="Masukkan berat dalam Kg" required
                       className="w-full bg-transparent border-b-2 border-gray-200 focus:border-[#3D4550] py-3 text-[#111827] text-base font-light focus:outline-none transition-colors placeholder:text-gray-300"
                     />
@@ -299,7 +302,7 @@ export default function CekHargaPage() {
                       <span className="text-[10px] font-semibold tracking-wider uppercase bg-amber-100 text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">Segera Hadir</span>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
-                      {["Panjang","Lebar","Tinggi"].map((ph) => (
+                      {["Panjang", "Lebar", "Tinggi"].map((ph) => (
                         <input key={ph} type="number" disabled placeholder={ph}
                           className="w-full bg-gray-50 border-b-2 border-gray-100 py-3 text-gray-300 text-base font-light cursor-not-allowed text-center rounded-t-md" />
                       ))}
@@ -318,7 +321,7 @@ export default function CekHargaPage() {
               <div className="mt-8 p-5 border border-gray-100 rounded-2xl bg-gray-50/60 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-white border border-gray-100 shadow-sm flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
                 </div>
                 <div>
@@ -379,7 +382,7 @@ export default function CekHargaPage() {
                                   <p className="text-xs text-gray-500 font-light mb-3">{result.description}</p>
                                   <div className="flex items-center gap-4">
                                     <span className="flex items-center gap-1 text-xs text-gray-400"><Clock size={14} /> {result.estimated_days}</span>
-                                    <span className="flex items-center gap-1 text-xs text-gray-400"><ShieldCheck size={14} /> Asuransi</span>
+                                    {/* <span className="flex items-center gap-1 text-xs text-gray-400"><ShieldCheck size={14} /> Asuransi</span> */}
                                   </div>
                                 </div>
                               </div>
