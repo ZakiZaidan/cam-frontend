@@ -49,7 +49,8 @@ export const INDONESIA_PROVINCES: IndonesiaProvince[] = [
   },
   {
     name: "DKI Jakarta",
-    cities: ["Jakarta Pusat","Jakarta Utara","Jakarta Barat","Jakarta Selatan","Jakarta Timur","Kepulauan Seribu"],
+    // "JAKARTA" & "Jakarta (periok)" sesuai format origin_city di DB
+    cities: ["Jakarta Pusat","Jakarta Utara","Jakarta Barat","Jakarta Selatan","Jakarta Timur","JAKARTA","Jakarta (periok)","Kepulauan Seribu"],
   },
   {
     name: "Jawa Barat",
@@ -69,7 +70,8 @@ export const INDONESIA_PROVINCES: IndonesiaProvince[] = [
   },
   {
     name: "Jawa Timur",
-    cities: ["Surabaya","Malang","Kediri","Blitar","Mojokerto","Probolinggo","Pasuruan","Madiun","Batu","Kab Bangkalan","Kab Banyuwangi","Kab Blitar","Kab Bojonegoro","Kab Bondowoso","Kab Gresik","Kab Jember","Kab Jombang","Kab Kediri","Kab Lamongan","Kab Lumajang","Kab Madiun","Kab Magetan","Kab Malang","Kab Mojokerto","Kab Nganjuk","Kab Ngawi","Kab Pacitan","Kab Pamekasan","Kab Pasuruan","Kab Ponorogo","Kab Probolinggo","Kab Sampang","Kab Sidoarjo","Kab Situbondo","Kab Sumenep","Kab Trenggalek","Kab Tuban","Kab Tulungagung"],
+    // "Surabaya (Perak)" sesuai format origin_city di DB
+    cities: ["Surabaya","Surabaya (Perak)","Malang","Kediri","Blitar","Mojokerto","Probolinggo","Pasuruan","Madiun","Batu","Kab Bangkalan","Kab Banyuwangi","Kab Blitar","Kab Bojonegoro","Kab Bondowoso","Kab Gresik","Kab Jember","Kab Jombang","Kab Kediri","Kab Lamongan","Kab Lumajang","Kab Madiun","Kab Magetan","Kab Malang","Kab Mojokerto","Kab Nganjuk","Kab Ngawi","Kab Pacitan","Kab Pamekasan","Kab Pasuruan","Kab Ponorogo","Kab Probolinggo","Kab Sampang","Kab Sidoarjo","Kab Situbondo","Kab Sumenep","Kab Trenggalek","Kab Tuban","Kab Tulungagung"],
   },
   {
     name: "Bali",

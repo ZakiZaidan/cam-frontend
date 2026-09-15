@@ -139,13 +139,12 @@ function LocationPicker({ idPrefix, label, kaltimKelurahanMap, onValueChange, sh
   const hasKelurahan = kelurahanList.length > 0;
 
   // Value yang dikirim ke API:
-  // - Jika showKelurahan=false (asal): hanya nama kota
-  // - Jika showKelurahan=true (tujuan) & ada kelurahan: "Kelurahan, Kota"
+  // - Jika kelurahan dipilih: "Kelurahan, Kota"
+  // - Jika kelurahan tidak dipilih (opsional): hanya nama kota
   const finalValue = useMemo(() => {
     if (!city) return "";
-    if (hasKelurahan && !kelurahan) return ""; // kelurahan wajib dipilih
-    return hasKelurahan ? `${kelurahan}, ${city}` : city;
-  }, [city, kelurahan, hasKelurahan]);
+    return kelurahan ? `${kelurahan}, ${city}` : city;
+  }, [city, kelurahan]);
 
   useEffect(() => { onValueChange(finalValue); }, [finalValue, onValueChange]);
 
